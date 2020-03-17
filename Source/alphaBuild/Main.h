@@ -24,12 +24,6 @@ public:
 	// Basic player stats
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Stats)
 	float HP;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Stats)
-	float KnockBack;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Stats)
-	float DamageLightAttack;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Stats)
-	float DamageHeavyAttack;
 
 	// Base movement values
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Movement)

@@ -4,6 +4,7 @@
 #include "Weapon.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Main.h"
+#include "SmallEnemy.h"
 #include "Engine/SkeletalMeshSocket.h"
 #include "Sound/SoundCue.h"
 #include "Kismet/GameplayStatics.h"
@@ -23,6 +24,8 @@ AWeapon::AWeapon()
 	WeaponState = EWeaponState::EWS_Pickup;
 
 	Damage = 25.f;
+	KnockBack = 1000.f;
+
 }
 
 void AWeapon::BeginPlay()

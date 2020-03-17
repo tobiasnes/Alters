@@ -57,9 +57,6 @@ AMain::AMain()
 	bWeaponEquipped = false;
 
 	HP = 100;
-	KnockBack = 30.f;
-	DamageLightAttack = 15.f;
-	DamageHeavyAttack = 30.f;
 
 }
 
