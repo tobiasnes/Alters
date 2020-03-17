@@ -56,7 +56,10 @@ AMain::AMain()
 	bEquipPressed = false;
 	bWeaponEquipped = false;
 
-
+	HP = 100;
+	KnockBack = 30.f;
+	DamageLightAttack = 15.f;
+	DamageHeavyAttack = 30.f;
 
 }
 
@@ -396,5 +399,15 @@ void AMain::AttackEnd()
 	if (bMove2Pressed)
 	{
 		Attack2();
+	}
+}
+
+void AMain::TakeDMG(float DamageValue, float KnockBackForce, FVector Direction)
+{
+	HP -= DamageValue; // Deals Damage
+	LaunchCharacter(Direction * KnockBackForce, true, true); // launches player to make the player feel the force from the hit
+	if (HP <= 0.f)
+	{
+		Destroy(); // Destroy the player if he looses all HP
 	}
 }

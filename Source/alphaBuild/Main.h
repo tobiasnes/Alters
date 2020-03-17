@@ -21,6 +21,16 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class UCameraComponent* PlayerCamera;
 
+	// Basic player stats
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Stats)
+	float HP;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Stats)
+	float KnockBack;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Stats)
+	float DamageLightAttack;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Stats)
+	float DamageHeavyAttack;
+
 	// Base movement values
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Movement)
 	float MovementSpeedDash;
@@ -135,4 +145,7 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Anims")
 	class UAnimMontage* CombatMontage;
+
+	void TakeDMG(float DamageValue, float KnockBackForce, FVector Direction);
+
 };

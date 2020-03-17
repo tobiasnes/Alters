@@ -55,6 +55,10 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Stats")
 	float HP;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Stats)
+	float KnockBack;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Stats)
+	float Damage;
 
 protected:
 	// Called when the game starts or when spawned

@@ -4,6 +4,7 @@
 #include "SmallEnemy.h"
 #include "Components/SphereComponent.h"
 #include "Components/BoxComponent.h"
+#include "Components/SceneComponent.h"
 #include "AIController.h"
 #include "AIModule.h"
 #include "Main.h"
@@ -30,6 +31,8 @@ ASmallEnemy::ASmallEnemy()
 	MainInHitRange = false;
 
 	HP = 30.f;
+	KnockBack = 500.f;
+	Damage = 15.f;
 	MovementSpeed = 450.f;
 	TurnRate = 250.f;
 
@@ -171,6 +174,7 @@ void ASmallEnemy::TakeDMG(float DamageValue, float KnockBackForce, FVector Direc
 void ASmallEnemy::AttackBoxOnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	MainInHitRange = true;
+
 	UE_LOG(LogTemp, Warning, TEXT("AttackBoxOnOverlapBegin()"));
 }
 
@@ -185,6 +189,21 @@ void ASmallEnemy::HitPlayer()
 	if (MainInHitRange)
 	{
 		// cast TakeDMG function on player
+		if (CombatTarget)
+		{
+			USceneComponent* SceneComp = Cast<USceneComponent>(GetComponentByClass(USceneComponent::StaticClass()));
+			const FRotator Rotation = SceneComp->GetComponentRotation();
+			const FRotator YawRotation(0, Rotation.Yaw, 0);
+			// get forward vector
+			FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
+
+			float x = Direction.X;
+			float y = Direction.Y;
+			float z = Direction.Z;
+
+			UE_LOG(LogTemp, Warning, TEXT("x: %f y: %f z: %f"), x, y, z);
+			Cast<AMain>(CombatTarget)->TakeDMG(Damage, KnockBack, Direction);
+		}
 		UE_LOG(LogTemp, Warning, TEXT("Player Got Hit!"));
 	}
 	UE_LOG(LogTemp, Warning, TEXT("HitPlayer()"));
