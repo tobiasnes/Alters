@@ -3,12 +3,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Character.h"
-#include "SmallEnemy.generated.h"
-
+#include "Enemy.h"
+#include "Pack.generated.h"
 
 UENUM(BlueprintType)
-enum class ESmallEnemyMovementStatus :uint8
+enum class EPackMovementStatus :uint8
 {
 	EMS_Idle			UMETA(DisplayName = "Idle"),
 	EMS_MoveToTarget	UMETA(DisplayName = "MoveToTarget"),
@@ -18,19 +17,22 @@ enum class ESmallEnemyMovementStatus :uint8
 };
 
 
+/**
+ * 
+ */
 UCLASS()
-class ALPHABUILD_API ASmallEnemy : public ACharacter
+class ALPHABUILD_API APack : public AEnemy
 {
 	GENERATED_BODY()
 
 public:
 	// Sets default values for this character's properties
-	ASmallEnemy();
-
+	APack();
+	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Movement")
-	ESmallEnemyMovementStatus SmallEnemyMovementStatus;
+	EPackMovementStatus PackMovementStatus;
 
-	FORCEINLINE void SetSmallEnemyMovementStatus(ESmallEnemyMovementStatus Status) { SmallEnemyMovementStatus = Status; }
+	FORCEINLINE void SetSmallEnemyMovementStatus(EPackMovementStatus Status) { PackMovementStatus = Status; }
 
 	// Sphere that will aggro the ai if the player overlaps
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AI")
@@ -47,25 +49,11 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Attack")
 	class UBoxComponent* AttackBox;
 
-	// Movement values
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Movement")
-	float MovementSpeed;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Movement")
-	float TurnRate;
-
-	// Stats
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Stats")
-	float HP;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Stats)
-	float KnockBack;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Stats)
-	float Damage;
-
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-public:	
+public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
@@ -85,6 +73,8 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void MoveToTarget(class AMain* Target);
 
+	virtual void TakeDMG(float DamageValue, float KnockBackForce, FVector Direction);
+
 	// tells the AI if the player is within mele range
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "AI")
 	bool bOverlappingCombatSphere;
@@ -92,8 +82,6 @@ public:
 	// Attack Target (atm for use in the animasion BP)
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "AI")
 	AMain* CombatTarget;
-
-	void TakeDMG(float DamageValue, float KnockBackForce, FVector Direction);
 
 	// tells the AI if the player is within mele range of the hit
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "AI")
