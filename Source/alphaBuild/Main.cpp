@@ -155,6 +155,7 @@ void AMain::EquipReleased()
 
 void AMain::DashStyle()
 {
+	bAttacking = false;
 	if (EquippedWeapon)
 	{
 		EquippedWeapon->Destroy();
@@ -164,10 +165,12 @@ void AMain::DashStyle()
 	StyleIndex = 1;
 	GetCharacterMovement()->MaxWalkSpeed = MovementSpeedDash;
 	UE_LOG(LogTemp, Warning, TEXT("DashStyle()"));
+	
 }
 
 void AMain::FuryStyle()
 {
+	bAttacking = false;
 	if (bFuryUnlocked)
 	{
 		StyleIndex = 2;
@@ -193,11 +196,12 @@ void AMain::FuryStyle()
 
 void AMain::DefenseStyle()
 {
-	if (EquippedWeapon)
-	{
-		EquippedWeapon->Destroy();
-		EquippedWeapon = false;
-	}
+	bAttacking = false;
+		if (EquippedWeapon)
+		{
+			EquippedWeapon->Destroy();
+			EquippedWeapon = false;
+		}
 
 	if (bDefenceUnlocked)
 	{
@@ -209,18 +213,19 @@ void AMain::DefenseStyle()
 
 void AMain::RangedStyle()
 {
-	if (EquippedWeapon)
-	{
-	EquippedWeapon->Destroy();
-	EquippedWeapon = false;
-	}
+	bAttacking = false;
+		if (EquippedWeapon)
+		{
+			EquippedWeapon->Destroy();
+			EquippedWeapon = false;
+		}
 
-	if (bRangedUnlocked)
-	{
-		StyleIndex = 4;
-		GetCharacterMovement()->MaxWalkSpeed = MovementSpeedRanged;
-	}
-	UE_LOG(LogTemp, Warning, TEXT("RangedStyle()"));
+		if (bRangedUnlocked)
+		{
+			StyleIndex = 4;
+			GetCharacterMovement()->MaxWalkSpeed = MovementSpeedRanged;
+		}
+		UE_LOG(LogTemp, Warning, TEXT("RangedStyle()"));
 }
 
 void AMain::Move1Pressed()
@@ -359,7 +364,6 @@ void AMain::Attack()
 	if (!bAttacking)
 	{
 		bAttacking = true;
-
 		UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
 		if (AnimInstance && CombatMontage)
 		{
@@ -375,7 +379,6 @@ void AMain::Attack2()
 	if (!bAttacking)
 	{
 		bAttacking = true;
-
 		UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
 		if (AnimInstance && CombatMontage)
 		{
