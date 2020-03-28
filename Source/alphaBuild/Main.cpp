@@ -156,6 +156,7 @@ void AMain::EquipReleased()
 void AMain::DashStyle()
 {
 	bAttacking = false;
+	EquippedWeapon->DeactivateCollision();
 	if (EquippedWeapon)
 	{
 		EquippedWeapon->Destroy();
@@ -171,6 +172,7 @@ void AMain::DashStyle()
 void AMain::FuryStyle()
 {
 	bAttacking = false;
+	EquippedWeapon->DeactivateCollision();
 	if (bFuryUnlocked)
 	{
 		StyleIndex = 2;
@@ -197,6 +199,7 @@ void AMain::FuryStyle()
 void AMain::DefenseStyle()
 {
 	bAttacking = false;
+	EquippedWeapon->DeactivateCollision();
 		if (EquippedWeapon)
 		{
 			EquippedWeapon->Destroy();
@@ -214,6 +217,7 @@ void AMain::DefenseStyle()
 void AMain::RangedStyle()
 {
 	bAttacking = false;
+	EquippedWeapon->DeactivateCollision();
 		if (EquippedWeapon)
 		{
 			EquippedWeapon->Destroy();
