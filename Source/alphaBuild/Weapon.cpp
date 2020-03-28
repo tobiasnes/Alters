@@ -78,7 +78,7 @@ void AWeapon::Equip(AMain* Char)
 
 		SkeletalMesh->SetSimulatePhysics(false);
 
-		const USkeletalMeshSocket* RightHandSocket = Char->GetMesh()->GetSocketByName("RightHandSocket");
+		const USkeletalMeshSocket* RightHandSocket = Char->GetMesh()->GetSocketByName("Right_Hand_jointSocket");
 
 		if (RightHandSocket)
 		{

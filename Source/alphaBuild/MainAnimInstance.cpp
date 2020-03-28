@@ -29,10 +29,15 @@ void UMainAnimInstance::UpdateAnimationProperties()
 		FVector Speed = Pawn->GetVelocity();
 		FVector LateralSpeed = FVector(Speed.X, Speed.Y, 0.f);
 		MovementSpeed = LateralSpeed.Size();
-		bIsDashing = false;
-		if (MovementSpeed > 1500.f)
+		//UE_LOG(LogTemp, Warning, TEXT("Speed is %f"), MovementSpeed);
+		
+		if (MovementSpeed > 1300.f)
 		{
 			bIsDashing = true;
+		}
+		else
+		{
+			bIsDashing = false;
 		}
 
 		bIsFalling = Pawn->GetMovementComponent()->IsFalling();

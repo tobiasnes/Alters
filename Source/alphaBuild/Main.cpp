@@ -156,9 +156,10 @@ void AMain::EquipReleased()
 void AMain::DashStyle()
 {
 	bAttacking = false;
-	EquippedWeapon->DeactivateCollision();
+	
 	if (EquippedWeapon)
 	{
+		EquippedWeapon->DeactivateCollision();
 		EquippedWeapon->Destroy();
 		EquippedWeapon = false;
 	}
@@ -172,7 +173,10 @@ void AMain::DashStyle()
 void AMain::FuryStyle()
 {
 	bAttacking = false;
-	EquippedWeapon->DeactivateCollision();
+	if (EquippedWeapon)
+	{
+		EquippedWeapon->DeactivateCollision();
+	}
 	if (bFuryUnlocked)
 	{
 		StyleIndex = 2;
@@ -199,9 +203,9 @@ void AMain::FuryStyle()
 void AMain::DefenseStyle()
 {
 	bAttacking = false;
-	EquippedWeapon->DeactivateCollision();
 		if (EquippedWeapon)
 		{
+			EquippedWeapon->DeactivateCollision();
 			EquippedWeapon->Destroy();
 			EquippedWeapon = false;
 		}
@@ -217,9 +221,9 @@ void AMain::DefenseStyle()
 void AMain::RangedStyle()
 {
 	bAttacking = false;
-	EquippedWeapon->DeactivateCollision();
 		if (EquippedWeapon)
 		{
+			EquippedWeapon->DeactivateCollision();
 			EquippedWeapon->Destroy();
 			EquippedWeapon = false;
 		}
@@ -369,10 +373,10 @@ void AMain::Attack()
 	{
 		bAttacking = true;
 		UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
-		if (AnimInstance && CombatMontage)
+		if (AnimInstance && AlterMontage)
 		{
-			AnimInstance->Montage_Play(CombatMontage, 1.35f);
-			AnimInstance->Montage_JumpToSection(FName("Attack_1"), CombatMontage);
+			AnimInstance->Montage_Play(AlterMontage, 1.35f);
+			AnimInstance->Montage_JumpToSection(FName("Attack_1"), AlterMontage);
 			UE_LOG(LogTemp, Warning, TEXT("YOURE HERE LOL"));
 		}
 	}
@@ -384,10 +388,10 @@ void AMain::Attack2()
 	{
 		bAttacking = true;
 		UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
-		if (AnimInstance && CombatMontage)
+		if (AnimInstance && AlterMontage)
 		{
-			AnimInstance->Montage_Play(CombatMontage, 1.35f);
-			AnimInstance->Montage_JumpToSection(FName("Attack_2"), CombatMontage);
+			AnimInstance->Montage_Play(AlterMontage, 1.35f);
+			AnimInstance->Montage_JumpToSection(FName("Attack_2"), AlterMontage);
 			UE_LOG(LogTemp, Warning, TEXT("YOURE HERE LOL"));
 		}
 	}

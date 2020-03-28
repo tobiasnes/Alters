@@ -138,7 +138,7 @@ public:
 	void AttackEnd();
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Anims")
-	class UAnimMontage* CombatMontage;
+	class UAnimMontage* AlterMontage;
 
 	void TakeDMG(float DamageValue, float KnockBackForce, FVector Direction);
 
