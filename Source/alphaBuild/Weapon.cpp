@@ -8,6 +8,7 @@
 #include "Engine/SkeletalMeshSocket.h"
 #include "Sound/SoundCue.h"
 #include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetMathLibrary.h"
 #include "Particles/ParticleSystemComponent.h"
 #include "Components/BoxComponent.h"
 
@@ -79,6 +80,7 @@ void AWeapon::Equip(AMain* Char)
 		SkeletalMesh->SetSimulatePhysics(false);
 
 		const USkeletalMeshSocket* RightHandSocket = Char->GetMesh()->GetSocketByName("Right_Hand_jointSocket");
+		EquippedOn = Cast<AMain>(Char);
 
 		if (RightHandSocket)
 		{
@@ -108,11 +110,10 @@ void AWeapon::CombatOnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AAc
 		AEnemy* Enemy = Cast<AEnemy>(OtherActor);
 		if (Enemy)
 		{
-			USceneComponent* SceneComp = Cast<USceneComponent>(GetComponentByClass(USceneComponent::StaticClass()));
-			const FRotator Rotation = SceneComp->GetComponentRotation();
-			const FRotator YawRotation(0, Rotation.Yaw, 0);
+			FRotator ToEnemyRotation = UKismetMathLibrary::FindLookAtRotation(EquippedOn->GetActorLocation(), Enemy->GetActorLocation());
+			FRotator YawToEnemyRotation = FRotator(0.f, ToEnemyRotation.Yaw, 0.f);
 			// get forward vector
-			FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
+			FVector Direction = FRotationMatrix(YawToEnemyRotation).GetUnitAxis(EAxis::X);
 
 			float x = Direction.X;
 			float y = Direction.Y;
