@@ -2,6 +2,7 @@
 
 
 #include "Enemy.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 // Sets default values
 AEnemy::AEnemy()
@@ -21,6 +22,12 @@ AEnemy::AEnemy()
 void AEnemy::BeginPlay()
 {
 	Super::BeginPlay();
+
+	// Configure character movement
+	bUseControllerRotationYaw = false;
+	GetCharacterMovement()->bOrientRotationToMovement = true; // Character faces in the direction of input...
+	GetCharacterMovement()->RotationRate = FRotator(0.0f, TurnRate, 0.0f); // ...at ths rotation rate
+	GetCharacterMovement()->MaxWalkSpeed = MovementSpeed; // Sets Movement Speed
 	
 }
 

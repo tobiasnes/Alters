@@ -9,6 +9,7 @@
 #include "AIModule.h"
 #include "Main.h"
 #include "Kismet/KismetSystemLibrary.h"
+#include "Kismet/KismetMathLibrary.h"
 
 APack::APack()
 {
@@ -28,6 +29,10 @@ APack::APack()
 
 	bOverlappingCombatSphere = false;
 	MainInHitRange = false;
+
+	InterpSpeed = 15.f;
+	bInterpToMain = false;
+
 }
 
 // Called when the game starts or when spawned
@@ -53,6 +58,21 @@ void APack::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if (bInterpToMain && CombatTarget)
+	{
+		FRotator LookAtYaw = GetLookAtRotationYaw(CombatTarget->GetActorLocation());
+		FRotator InterpRotation = FMath::RInterpTo(GetActorRotation(), LookAtYaw, DeltaTime, InterpSpeed);
+
+		SetActorRotation(InterpRotation);
+	}
+
+}
+
+FRotator APack::GetLookAtRotationYaw(FVector Target)
+{
+	FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), Target);
+	FRotator YawLookAtRotation = FRotator(0.f, LookAtRotation.Yaw, 0.f);
+	return YawLookAtRotation;
 }
 
 // Called to bind functionality to input
@@ -102,6 +122,7 @@ void APack::CombatSphereOnOverlapBegin(UPrimitiveComponent* OverlappedComponent,
 			{
 				CombatTarget = Main;
 				bOverlappingCombatSphere = true;
+				SetInterpToMain(true);
 				SetSmallEnemyMovementStatus(EPackMovementStatus::EMS_Attacking);
 			}
 		}
@@ -117,6 +138,7 @@ void APack::CombatSphereOnOverlapEnd(UPrimitiveComponent* OverlappedComponent, A
 			if (Main)
 			{
 				bOverlappingCombatSphere = false;
+				SetInterpToMain(false);
 				if (PackMovementStatus != EPackMovementStatus::EMS_Attacking)
 				{
 					MoveToTarget(Main);
@@ -194,4 +216,9 @@ void APack::HitPlayer()
 		UE_LOG(LogTemp, Warning, TEXT("Player Got Hit!"));
 	}
 	UE_LOG(LogTemp, Warning, TEXT("HitPlayer()"));
+}
+
+void APack::SetInterpToMain(bool interp)
+{
+	bInterpToMain = interp;
 }

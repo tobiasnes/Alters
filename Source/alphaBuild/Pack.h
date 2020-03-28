@@ -49,6 +49,11 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Attack")
 	class UBoxComponent* AttackBox;
 
+	float InterpSpeed;
+	bool bInterpToMain;
+	void SetInterpToMain(bool interp);
+	FRotator GetLookAtRotationYaw(FVector Target);
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
