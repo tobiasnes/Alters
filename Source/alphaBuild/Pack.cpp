@@ -30,7 +30,7 @@ APack::APack()
 	bOverlappingCombatSphere = false;
 	MainInHitRange = false;
 
-	InterpSpeed = 15.f;
+	InterpSpeed = 10.f;
 	bInterpToMain = false;
 
 }

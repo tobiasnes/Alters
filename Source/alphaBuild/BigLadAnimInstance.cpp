@@ -1,23 +1,23 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "PackAnimInstance.h"
-#include "Pack.h"
+#include "BigLadAnimInstance.h"
+#include "BigLad.h"
 
 
-void UPackAnimInstance::NativeInitializeAnimation()
+void UBigLadAnimInstance::NativeInitializeAnimation()
 {
 	if (Pawn == nullptr)
 	{
 		Pawn = TryGetPawnOwner();
 		if (Pawn)
 		{
-			Pack = Cast<APack>(Pawn);
+			BigLad = Cast<ABigLad>(Pawn);
 		}
 	}
 }
 
-void UPackAnimInstance::UpdateAnimationProperties()
+void UBigLadAnimInstance::UpdateAnimationProperties()
 {
 	if (Pawn == nullptr)
 	{
@@ -25,11 +25,11 @@ void UPackAnimInstance::UpdateAnimationProperties()
 		Pawn = TryGetPawnOwner();
 		if (Pawn)
 		{
-			Pack = Cast<APack>(Pawn);
+			BigLad = Cast<ABigLad>(Pawn);
 		}
 
 	}
-
+	
 	if (Pawn)
 	{
 		FVector Speed = Pawn->GetVelocity();
