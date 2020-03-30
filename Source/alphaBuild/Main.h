@@ -56,6 +56,8 @@ public:
 	float DashCooldown;
 	UPROPERTY()
 	bool bCanDash;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Ability)
+	bool bIsDashing;
 	UPROPERTY()
 	FVector SpeedBeforeDash;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Ability)

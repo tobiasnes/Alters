@@ -50,6 +50,7 @@ AMain::AMain()
 	DashDistance = 5000.f;
 	DashCooldown = 0.5f;
 	bCanDash = true;
+	bIsDashing = false;
 	SpeedBeforeDash = FVector(0.f);
 	DashStop = 0.1f;
 
@@ -335,6 +336,7 @@ void AMain::Dash()
 {
 	if (bCanDash)
 	{
+		bIsDashing = true;
 		SpeedBeforeDash = FVector(GetActorForwardVector().X, GetActorForwardVector().Y, 0.f) * MovementSpeedDash;
 		GetCharacterMovement()->BrakingFrictionFactor = 0.f; // Removes friction
 		LaunchCharacter(FVector(GetActorForwardVector().X, GetActorForwardVector().Y, 0.f) * DashDistance, true, true);
@@ -346,6 +348,7 @@ void AMain::Dash()
 
 void AMain::StopDashing()
 {
+	bIsDashing = false;
 	GetCharacterMovement()->StopMovementImmediately();
 	LaunchCharacter(SpeedBeforeDash, true, true);
 	GetCharacterMovement()->BrakingFrictionFactor = 2.f; // Sets friction back to default
