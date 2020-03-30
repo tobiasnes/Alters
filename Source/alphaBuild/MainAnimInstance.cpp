@@ -31,14 +31,7 @@ void UMainAnimInstance::UpdateAnimationProperties()
 		MovementSpeed = LateralSpeed.Size();
 		//UE_LOG(LogTemp, Warning, TEXT("Speed is %f"), MovementSpeed);
 		
-		if (MovementSpeed > 1300.f)
-		{
-			bIsDashing = true;
-		}
-		else
-		{
-			bIsDashing = false;
-		}
+		bIsDashing = MovementSpeed > 1300.f;
 
 		bIsFalling = Pawn->GetMovementComponent()->IsFalling();
 
