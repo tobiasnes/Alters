@@ -120,6 +120,7 @@ void APack::CombatSphereOnOverlapBegin(UPrimitiveComponent* OverlappedComponent,
 		{
 			if (Main)
 			{
+				Main->SetCombatTarget(this);
 				CombatTarget = Main;
 				bOverlappingCombatSphere = true;
 				SetInterpToMain(true);
@@ -137,6 +138,7 @@ void APack::CombatSphereOnOverlapEnd(UPrimitiveComponent* OverlappedComponent, A
 		{
 			if (Main)
 			{
+				Main->SetCombatTarget(nullptr);
 				bOverlappingCombatSphere = false;
 				SetInterpToMain(false);
 				if (PackMovementStatus != EPackMovementStatus::EMS_Attacking)

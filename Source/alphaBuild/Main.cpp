@@ -14,6 +14,8 @@
 #include "Components/StaticMeshComponent.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Animation/AnimInstance.h"
+#include "Kismet/KismetMathLibrary.h"
+#include "Enemy.h"
 
 // Sets default values
 AMain::AMain()
@@ -58,6 +60,12 @@ AMain::AMain()
 
 	HP = 100;
 
+	bFuryAttack1 = false;
+	bFuryAttack2 = false;
+
+	InterpSpeed = 15.f;
+	bInterpToEnemy = false;
+
 }
 
 // Called when the game starts or when spawned
@@ -77,6 +85,21 @@ void AMain::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if (bInterpToEnemy && CombatTarget)
+	{
+		FRotator LookAtYaw = GetLookAtRotationYaw(CombatTarget->GetActorLocation());
+		FRotator InterpRotation = FMath::RInterpTo(GetActorRotation(), LookAtYaw, DeltaTime, InterpSpeed);
+
+		SetActorRotation(InterpRotation);
+	}
+
+}
+
+FRotator AMain::GetLookAtRotationYaw(FVector Target)
+{
+	FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), Target);
+	FRotator LookAtRotationYaw(0.f, LookAtRotation.Yaw, 0.f);
+	return LookAtRotationYaw;
 }
 
 // Called to bind functionality to input
@@ -126,6 +149,11 @@ void AMain::MoveRight(float Value)
 		const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
 		AddMovementInput(Direction, Value);
 	}
+}
+
+void AMain::SetInterpToEnemy(bool Interp)
+{
+	bInterpToEnemy = Interp;
 }
 
 void AMain::EquipPressed()
@@ -371,7 +399,10 @@ void AMain::Attack()
 {
 	if (!bAttacking)
 	{
+		bFuryAttack1 = true;
 		bAttacking = true;
+		SetInterpToEnemy(true);
+
 		UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
 		if (AnimInstance && AlterMontage)
 		{
@@ -386,7 +417,10 @@ void AMain::Attack2()
 {
 	if (!bAttacking)
 	{
+		bFuryAttack2 = true;
 		bAttacking = true;
+		SetInterpToEnemy(true);
+
 		UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
 		if (AnimInstance && AlterMontage)
 		{
@@ -400,6 +434,9 @@ void AMain::Attack2()
 void AMain::AttackEnd()
 {
 	bAttacking = false;
+	SetInterpToEnemy(false);
+	bFuryAttack1 = false;
+	bFuryAttack2 = false;
 	if (bMove1Pressed)
 	{
 		Attack();

@@ -40,6 +40,17 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Movement)
 	int StyleIndex;
 
+    float InterpSpeed;
+	bool bInterpToEnemy;
+	void SetInterpToEnemy(bool Interp);
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Combat)
+	class AEnemy* CombatTarget;
+
+	FORCEINLINE void SetCombatTarget(AEnemy* Target) { CombatTarget = Target; }
+
+	FRotator GetLookAtRotationYaw(FVector Target);
+
 	// ability unlocked?
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Styles)
 	bool bFuryUnlocked{ false };
@@ -102,6 +113,9 @@ public:
 	//Weapon Equips
 	bool bEquipPressed;
 	bool bWeaponEquipped;
+
+	bool bFuryAttack1;
+	bool bFuryAttack2;
 
 	void EquipPressed();
 	void EquipReleased();

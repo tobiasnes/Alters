@@ -24,7 +24,8 @@ AWeapon::AWeapon()
 
 	WeaponState = EWeaponState::EWS_Pickup;
 
-	Damage = 25.f;
+	LightDamage = 25.f;
+	HeavyDamage = 35.f;
 	KnockBack = 1000.f;
 
 }
@@ -115,12 +116,16 @@ void AWeapon::CombatOnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AAc
 			// get forward vector
 			FVector Direction = FRotationMatrix(YawToEnemyRotation).GetUnitAxis(EAxis::X);
 
-			float x = Direction.X;
-			float y = Direction.Y;
-			float z = Direction.Z;
-
-			UE_LOG(LogTemp, Warning, TEXT("x: %f y: %f z: %f"), x, y, z);
-			Enemy->TakeDMG(Damage, KnockBack, Direction);
+			if (EquippedOn->bFuryAttack1 == true)
+			{
+				Enemy->TakeDMG(LightDamage, KnockBack, Direction);
+				UE_LOG(LogTemp, Warning, TEXT("You did %f damage"), LightDamage);
+			}
+			if (EquippedOn->bFuryAttack2 == true)
+			{
+				Enemy->TakeDMG(HeavyDamage, KnockBack, Direction);
+				UE_LOG(LogTemp, Warning, TEXT("You did %f damage"), HeavyDamage);
+			}
 		}
 	}
 }

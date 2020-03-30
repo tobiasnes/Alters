@@ -47,7 +47,9 @@ public:
 	class UBoxComponent* CombatCollision;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item | Combat")
-	float Damage;
+	float LightDamage;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item | Combat")
+	float HeavyDamage;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item | Combat")
 	float KnockBack;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Item | Combat")

@@ -10,7 +10,7 @@ AEnemy::AEnemy()
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	HP = 30.f;
+	HP = 70.f;
 	KnockBack = 500.f;
 	Damage = 15.f;
 	MovementSpeed = 450.f;

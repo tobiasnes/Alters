@@ -215,6 +215,7 @@ void ABigLad::CombatSphereOnOverlapBegin(UPrimitiveComponent* OverlappedComponen
 		{
 			if (Main)
 			{
+				Main->SetCombatTarget(this);
 				bOverlappingCombatSphere = true;
 				if ((!bIsCharging) && (!bIsExhausted))
 				{
@@ -234,6 +235,7 @@ void ABigLad::CombatSphereOnOverlapEnd(UPrimitiveComponent* OverlappedComponent,
 		{
 			if (Main)
 			{
+				Main->SetCombatTarget(nullptr);
 				bOverlappingCombatSphere = false;
 				if ((!bIsCharging) && (!bIsExhausted))
 				{
