@@ -11,6 +11,7 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "Particles/ParticleSystemComponent.h"
 #include "Components/BoxComponent.h"
+#include "GameFramework/PlayerController.h"
 
 AWeapon::AWeapon()
 {
@@ -26,7 +27,10 @@ AWeapon::AWeapon()
 
 	LightDamage = 25.f;
 	HeavyDamage = 35.f;
+	DashDamage = 15.f;
 	KnockBack = 1000.f;
+
+	bFuryGet = false;
 
 }
 
@@ -125,6 +129,11 @@ void AWeapon::CombatOnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AAc
 			{
 				Enemy->TakeDMG(HeavyDamage, KnockBack, Direction);
 				UE_LOG(LogTemp, Warning, TEXT("You did %f damage"), HeavyDamage);
+			}
+			if (EquippedOn->bDashAttack == true)
+			{
+				Enemy->TakeDMG(DashDamage, KnockBack, Direction);
+				UE_LOG(LogTemp, Warning, TEXT("You did %f damage"), DashDamage);
 			}
 		}
 	}

@@ -31,6 +31,15 @@ public:
 
 	AWeapon();
 
+	UPROPERTY()
+	bool bFuryGet;
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void KnifeMesh();
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void SwordMesh();
+
 	UPROPERTY(VisibleAnywhere, BluePrintReadWrite, Category = "Item")
 	EWeaponState WeaponState;
 
@@ -50,6 +59,8 @@ public:
 	float LightDamage;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item | Combat")
 	float HeavyDamage;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item | Combat")
+	float DashDamage;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item | Combat")
 	float KnockBack;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Item | Combat")

@@ -16,6 +16,7 @@
 #include "Animation/AnimInstance.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Enemy.h"
+#include "Components/BoxComponent.h"
 
 // Sets default values
 AMain::AMain()
@@ -54,11 +55,14 @@ AMain::AMain()
 	bCanDash = true;
 	SpeedBeforeDash = FVector(0.f);
 	DashStop = 0.1f;
+	bDashing = false;
 
 	bEquipPressed = false;
 	bWeaponEquipped = false;
 
 	HP = 100;
+
+	bDashAttack = false;
 
 	bFuryAttack1 = false;
 	bFuryAttack2 = false;
@@ -127,7 +131,7 @@ void AMain::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 void AMain::MoveUp(float Value)
 {
-	if ((Controller != nullptr) && (Value != 0.0f) && (!bAttacking))
+	if ((Controller != nullptr) && (Value != 0.0f))
 	{
 		// Finds the forward direction
 		const FRotator Rotation = Controller->GetControlRotation();
@@ -140,7 +144,7 @@ void AMain::MoveUp(float Value)
 
 void AMain::MoveRight(float Value)
 {
-	if ((Controller != nullptr) && (Value != 0.0f) && (!bAttacking))
+	if ((Controller != nullptr) && (Value != 0.0f))
 	{
 		// Finds the forward direction
 		const FRotator Rotation = Controller->GetControlRotation();
@@ -168,6 +172,7 @@ void AMain::EquipPressed()
 		{
 			//EquipMesh();
 			bFuryUnlocked = true;
+			bDashKnifeUnlocked = true;
 			StyleIndex = 2;
 			GetCharacterMovement()->MaxWalkSpeed = MovementSpeedFury;
 			Weapon->Equip(this);
@@ -188,8 +193,12 @@ void AMain::DashStyle()
 	if (EquippedWeapon)
 	{
 		EquippedWeapon->DeactivateCollision();
-		EquippedWeapon->Destroy();
-		EquippedWeapon = false;
+		//EquippedWeapon->Destroy();
+		//EquippedWeapon = false;
+
+		EquippedWeapon->KnifeMesh();
+		EquippedWeapon->CombatCollision->SetRelativeScale3D(FVector(0.3f, 0.25f, 0.6f));
+		EquippedWeapon->CombatCollision->SetRelativeLocation(FVector(0.5f, 0.f, 30.f));
 	}
 
 	StyleIndex = 1;
@@ -204,12 +213,14 @@ void AMain::FuryStyle()
 	if (EquippedWeapon)
 	{
 		EquippedWeapon->DeactivateCollision();
+		EquippedWeapon->SwordMesh();
+		EquippedWeapon->CombatCollision->SetRelativeScale3D(FVector(0.35f, 0.25f, 1.6f));
+		EquippedWeapon->CombatCollision->SetRelativeLocation(FVector(0.5f, 0.f, 60.f));
 	}
 	if (bFuryUnlocked)
 	{
-		StyleIndex = 2;
-		GetCharacterMovement()->MaxWalkSpeed = MovementSpeedFury;
-		if(bWeaponEquipped == true)
+		
+		if((bWeaponEquipped == true) && (StyleIndex != 1))
 		{
 
 		GetWorld()->SpawnActor<AWeapon>(SpawnerClass, FTransform(GetActorLocation()));
@@ -223,6 +234,8 @@ void AMain::FuryStyle()
 		}
 
 		}
+		StyleIndex = 2;
+		GetCharacterMovement()->MaxWalkSpeed = MovementSpeedFury;
 	}
 
 	UE_LOG(LogTemp, Warning, TEXT("RageStyle()"));
@@ -271,6 +284,10 @@ void AMain::Move1Pressed()
 	{
 	case 1:
 		UE_LOG(LogTemp, Warning, TEXT("Dash Move1 Pressed"));
+		if (bDashing && bDashKnifeUnlocked)
+		{
+			Attack4();
+		}
 		break;
 	case 2:
 		UE_LOG(LogTemp, Warning, TEXT("Fury Move1 Pressed"));
@@ -363,6 +380,7 @@ void AMain::Dash()
 {
 	if (bCanDash)
 	{
+		bDashing = true;
 		SpeedBeforeDash = FVector(GetActorForwardVector().X, GetActorForwardVector().Y, 0.f) * MovementSpeedDash;
 		GetCharacterMovement()->BrakingFrictionFactor = 0.f; // Removes friction
 		LaunchCharacter(FVector(GetActorForwardVector().X, GetActorForwardVector().Y, 0.f) * DashDistance, true, true);
@@ -374,6 +392,7 @@ void AMain::Dash()
 
 void AMain::StopDashing()
 {
+	bDashing = false;
 	GetCharacterMovement()->StopMovementImmediately();
 	LaunchCharacter(SpeedBeforeDash, true, true);
 	GetCharacterMovement()->BrakingFrictionFactor = 2.f; // Sets friction back to default
@@ -431,19 +450,45 @@ void AMain::Attack2()
 	}
 }
 
+void AMain::Attack4()
+{
+	if (!bAttacking)
+	{
+		bDashAttack = true;
+		bAttacking = true;
+		SetInterpToEnemy(true);
+
+		UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+		if (AnimInstance && AlterMontage)
+		{
+			AnimInstance->Montage_Play(AlterMontage, 1.35f);
+			AnimInstance->Montage_JumpToSection(FName("Attack_4"), AlterMontage);
+			UE_LOG(LogTemp, Warning, TEXT("YOURE HERE LOL"));
+		}
+	}
+}
+
 void AMain::AttackEnd()
 {
 	bAttacking = false;
 	SetInterpToEnemy(false);
+	bDashAttack = false;
 	bFuryAttack1 = false;
 	bFuryAttack2 = false;
 	if (bMove1Pressed)
 	{
-		Attack();
+		if (StyleIndex == 2)
+		{
+			Attack();
+		}
+		
 	}
 	if (bMove2Pressed)
 	{
-		Attack2();
+		if (StyleIndex == 2)
+		{
+			Attack2();
+		}
 	}
 }
 

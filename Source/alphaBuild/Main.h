@@ -53,6 +53,8 @@ public:
 
 	// ability unlocked?
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Styles)
+	bool bDashKnifeUnlocked{ false };
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Styles)
 	bool bFuryUnlocked{ false };
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Styles)
 	bool bDefenceUnlocked{ false };
@@ -67,6 +69,8 @@ public:
 	float DashCooldown;
 	UPROPERTY()
 	bool bCanDash;
+	UPROPERTY()
+	bool bDashing;
 	UPROPERTY()
 	FVector SpeedBeforeDash;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Ability)
@@ -114,6 +118,8 @@ public:
 	bool bEquipPressed;
 	bool bWeaponEquipped;
 
+	bool bDashAttack;
+
 	bool bFuryAttack1;
 	bool bFuryAttack2;
 
@@ -147,6 +153,7 @@ public:
 
 	void Attack();
 	void Attack2();
+	void Attack4();
 
 	UFUNCTION(BlueprintCallable)
 	void AttackEnd();
