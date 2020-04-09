@@ -17,6 +17,7 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "Enemy.h"
 #include "Components/BoxComponent.h"
+#include "Shield.h"
 
 // Sets default values
 AMain::AMain()
@@ -59,6 +60,8 @@ AMain::AMain()
 
 	bEquipPressed = false;
 	bWeaponEquipped = false;
+
+	bShieldEquipped = false;
 
 	HP = 100;
 
@@ -168,8 +171,14 @@ void AMain::EquipPressed()
 	{
 		
 		AWeapon* Weapon = Cast<AWeapon>(ActiveOverlappingItem);
+		AShield* Shield = Cast<AShield>(ActiveOverlappingItem);
 		if (Weapon)
 		{
+			if (EquippedShield)
+			{
+			EquippedShield->Destroy();
+			EquippedShield = false;
+			}
 			//EquipMesh();
 			bFuryUnlocked = true;
 			bDashKnifeUnlocked = true;
@@ -178,6 +187,20 @@ void AMain::EquipPressed()
 			Weapon->Equip(this);
 			SetActiveOverlappingItem(nullptr);
 			bWeaponEquipped = true;
+		}
+		else if (Shield)
+		{
+			if (EquippedWeapon)
+			{
+			EquippedWeapon->Destroy();
+		    EquippedWeapon = false;
+			}
+			bDefenceUnlocked = true;
+			StyleIndex = 3;
+			GetCharacterMovement()->MaxWalkSpeed = MovementSpeedDefence;
+			Shield->Equip(this);
+			SetActiveOverlappingItem(nullptr);
+			bShieldEquipped = true;
 		}
 	}
 }
@@ -200,6 +223,39 @@ void AMain::DashStyle()
 		EquippedWeapon->CombatCollision->SetRelativeScale3D(FVector(0.3f, 0.25f, 0.6f));
 		EquippedWeapon->CombatCollision->SetRelativeLocation(FVector(0.5f, 0.f, 30.f));
 	}
+	if (EquippedShield)
+	{
+		EquippedShield->Destroy();
+		EquippedShield = false;
+		UE_LOG(LogTemp, Warning, TEXT("DESTROYS SHIELD"))
+	}
+	if (bDashKnifeUnlocked)
+	{
+		if ((bWeaponEquipped == true) && (StyleIndex != 2))
+		{
+
+			GetWorld()->SpawnActor<AWeapon>(SpawnerClass, FTransform(GetActorLocation()));
+
+			AWeapon* Weapon = Cast<AWeapon>(ActiveOverlappingItem);
+			if (Weapon)
+			{
+				Weapon->Equip(this);
+				SetActiveOverlappingItem(nullptr);
+				if (EquippedWeapon)
+				{
+					EquippedWeapon->DeactivateCollision();
+					//EquippedWeapon->Destroy();
+					//EquippedWeapon = false;
+
+					EquippedWeapon->KnifeMesh();
+					EquippedWeapon->CombatCollision->SetRelativeScale3D(FVector(0.3f, 0.25f, 0.6f));
+					EquippedWeapon->CombatCollision->SetRelativeLocation(FVector(0.5f, 0.f, 30.f));
+				}
+			}
+
+		}
+		
+	}
 
 	StyleIndex = 1;
 	GetCharacterMovement()->MaxWalkSpeed = MovementSpeedDash;
@@ -217,6 +273,11 @@ void AMain::FuryStyle()
 		EquippedWeapon->CombatCollision->SetRelativeScale3D(FVector(0.35f, 0.25f, 1.6f));
 		EquippedWeapon->CombatCollision->SetRelativeLocation(FVector(0.5f, 0.f, 60.f));
 	}
+	if (EquippedShield)
+	{
+		EquippedShield->Destroy();
+		EquippedShield = false;
+	}
 	if (bFuryUnlocked)
 	{
 		
@@ -231,6 +292,13 @@ void AMain::FuryStyle()
 			Weapon->Equip(this);
 			SetActiveOverlappingItem(nullptr);
 			UE_LOG(LogTemp, Warning, TEXT("you attacked"));
+			if (EquippedWeapon)
+			{
+				EquippedWeapon->DeactivateCollision();
+				EquippedWeapon->SwordMesh();
+				EquippedWeapon->CombatCollision->SetRelativeScale3D(FVector(0.35f, 0.25f, 1.6f));
+				EquippedWeapon->CombatCollision->SetRelativeLocation(FVector(0.5f, 0.f, 60.f));
+			}
 		}
 
 		}
@@ -244,15 +312,29 @@ void AMain::FuryStyle()
 void AMain::DefenseStyle()
 {
 	bAttacking = false;
-		if (EquippedWeapon)
-		{
-			EquippedWeapon->DeactivateCollision();
-			EquippedWeapon->Destroy();
-			EquippedWeapon = false;
-		}
+	if (EquippedWeapon)
+	{
+		EquippedWeapon->DeactivateCollision();
+		EquippedWeapon->Destroy();
+		EquippedWeapon = false;
+	}
 
 	if (bDefenceUnlocked)
 	{
+		if ((bShieldEquipped == true) && (StyleIndex != 3))
+		{
+
+			GetWorld()->SpawnActor<AShield>(ShieldSpawnerClass, FTransform(GetActorLocation()));
+
+			AShield* Shield = Cast<AShield>(ActiveOverlappingItem);
+
+			if (Shield)
+			{
+				Shield->Equip(this);
+				SetActiveOverlappingItem(nullptr);
+			}
+
+		}
 		StyleIndex = 3;
 		GetCharacterMovement()->MaxWalkSpeed = MovementSpeedDefence;
 	}
@@ -412,6 +494,16 @@ void AMain::SetEquippedWeapon(AWeapon* WeaponToSet)
 	}
 
 	EquippedWeapon = WeaponToSet;
+}
+
+void AMain::SetEquippedShield(AShield* ShieldToSet)
+{
+	if (EquippedShield)
+	{
+		EquippedShield->Destroy();
+	}
+
+	EquippedShield = ShieldToSet;
 }
 
 void AMain::Attack()
