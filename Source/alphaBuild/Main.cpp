@@ -18,6 +18,7 @@
 #include "Enemy.h"
 #include "Components/BoxComponent.h"
 #include "Shield.h"
+#include "Animation/AnimMontage.h"
 
 // Sets default values
 AMain::AMain()
@@ -72,7 +73,8 @@ AMain::AMain()
 
 	InterpSpeed = 15.f;
 	bInterpToEnemy = false;
-
+	
+	bBlocking = false;
 }
 
 // Called when the game starts or when spawned
@@ -378,6 +380,10 @@ void AMain::Move1Pressed()
 
 		break;
 	case 3:
+
+		bBlocking = true;
+		Block();
+
 		UE_LOG(LogTemp, Warning, TEXT("Defense Move1 Pressed"));
 		break;
 	case 4:
@@ -390,6 +396,7 @@ void AMain::Move1Pressed()
 
 void AMain::Move1Released()
 {
+	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
 	bMove1Pressed = false;
 	switch (StyleIndex)
 	{
@@ -400,6 +407,12 @@ void AMain::Move1Released()
 		UE_LOG(LogTemp, Warning, TEXT("Fury Move1 Released"));
 		break;
 	case 3:
+
+		bBlocking = false;
+
+		AnimInstance->Montage_Stop(0.3f, AlterMontage);
+		UE_LOG(LogTemp, Warning, TEXT("We Got Here"))
+
 		UE_LOG(LogTemp, Warning, TEXT("Defense Move1 Released"));
 		break;
 	case 4:
@@ -580,6 +593,33 @@ void AMain::AttackEnd()
 		if (StyleIndex == 2)
 		{
 			Attack2();
+		}
+	}
+}
+
+void AMain::Block()
+{
+	/* do
+	{
+		UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+		if (AnimInstance && AlterMontage)
+		{
+			AnimInstance->Montage_Play(AlterMontage, 1.35f);
+			AnimInstance->Montage_JumpToSection(FName("Block_1"), AlterMontage);
+			UE_LOG(LogTemp, Warning, TEXT("YOURE HERE LOL"));
+		}
+	} while (bBlocking == true); */
+	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+
+	if (bBlocking)
+	{
+		
+		if (AnimInstance && AlterMontage)
+		{
+			AnimInstance->Montage_Play(AlterMontage, 1.35f);
+			AnimInstance->Montage_JumpToSection(FName("Block_1"), AlterMontage);
+			UE_LOG(LogTemp, Warning, TEXT("YOURE HERE LOL"));
+			
 		}
 	}
 }

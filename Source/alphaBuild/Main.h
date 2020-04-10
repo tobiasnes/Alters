@@ -163,13 +163,13 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Anims")
 	bool bAttacking;
 
-	
-	
-
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Anims")
+	bool bBlocking;
 
 	void Attack();
 	void Attack2();
 	void Attack4();
+	void Block();
 
 	UFUNCTION(BlueprintCallable)
 	void AttackEnd();
