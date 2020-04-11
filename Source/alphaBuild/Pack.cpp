@@ -10,6 +10,8 @@
 #include "Main.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "TimerManager.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 APack::APack()
 {
@@ -28,10 +30,13 @@ APack::APack()
 	AttackBox->SetupAttachment(GetRootComponent());
 
 	bOverlappingCombatSphere = false;
+	bOverlappingAggroSphere = false;
 	MainInHitRange = false;
 
 	InterpSpeed = 10.f;
 	bInterpToMain = false;
+
+	bStunned = false;
 
 }
 
@@ -58,7 +63,7 @@ void APack::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (bInterpToMain && CombatTarget)
+	if (bInterpToMain && CombatTarget && !bStunned)
 	{
 		FRotator LookAtYaw = GetLookAtRotationYaw(CombatTarget->GetActorLocation());
 		FRotator InterpRotation = FMath::RInterpTo(GetActorRotation(), LookAtYaw, DeltaTime, InterpSpeed);
@@ -89,7 +94,9 @@ void APack::AggroSphereOnOverlapBegin(UPrimitiveComponent* OverlappedComponent, 
 		AMain* Main = Cast<AMain>(OtherActor);
 		if (Main)
 		{
+			MoveTo = Main;
 			MoveToTarget(Main);
+			bOverlappingAggroSphere = true;
 		}
 	}
 }
@@ -102,10 +109,15 @@ void APack::AggroSphereOnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AA
 		{
 			if (Main)
 			{
-				SetSmallEnemyMovementStatus(EPackMovementStatus::EMS_Idle);
+				MoveTo = nullptr;
+				if (!bStunned)
+				{
+					SetSmallEnemyMovementStatus(EPackMovementStatus::EMS_Idle);
+				}
 				if (AIController)
 				{
 					AIController->StopMovement();
+					bOverlappingAggroSphere = false;
 				}
 			}
 		}
@@ -124,7 +136,10 @@ void APack::CombatSphereOnOverlapBegin(UPrimitiveComponent* OverlappedComponent,
 				CombatTarget = Main;
 				bOverlappingCombatSphere = true;
 				SetInterpToMain(true);
-				SetSmallEnemyMovementStatus(EPackMovementStatus::EMS_Attacking);
+				if (!bStunned)
+				{
+					SetSmallEnemyMovementStatus(EPackMovementStatus::EMS_Attacking);
+				}
 			}
 		}
 	}
@@ -153,7 +168,10 @@ void APack::CombatSphereOnOverlapEnd(UPrimitiveComponent* OverlappedComponent, A
 
 void APack::MoveToTarget(class AMain* Target)
 {
-	SetSmallEnemyMovementStatus(EPackMovementStatus::EMS_MoveToTarget);
+	if (!bStunned)
+	{
+		SetSmallEnemyMovementStatus(EPackMovementStatus::EMS_MoveToTarget);
+	}
 
 	if (AIController)
 	{
@@ -223,4 +241,34 @@ void APack::HitPlayer()
 void APack::SetInterpToMain(bool interp)
 {
 	bInterpToMain = interp;
+}
+
+void APack::StunnStart(float Time)
+{
+	bStunned = true;
+	PackMovementStatus = EPackMovementStatus::EMS_Stunned;
+	GetCharacterMovement()->RotationRate = FRotator(0.0f, 0.0f, 0.0f);
+	GetCharacterMovement()->MaxWalkSpeed = 0.0f;
+	GetWorldTimerManager().SetTimer(StunHandle, this, &APack::StunnEnd, Time);
+}
+
+void APack::StunnEnd()
+{
+	bStunned = false;
+	GetCharacterMovement()->RotationRate = FRotator(0.0f, TurnRate, 0.0f);
+	GetCharacterMovement()->MaxWalkSpeed = MovementSpeed;
+	if (bOverlappingCombatSphere)
+	{
+		PackMovementStatus = EPackMovementStatus::EMS_Attacking;
+	}
+	else if (bOverlappingAggroSphere)
+	{
+		PackMovementStatus = EPackMovementStatus::EMS_MoveToTarget;
+		MoveToTarget(MoveTo);
+	}
+	else
+	{
+		PackMovementStatus = EPackMovementStatus::EMS_Idle;
+	}
+	GetWorld()->GetTimerManager().ClearTimer(StunHandle);
 }

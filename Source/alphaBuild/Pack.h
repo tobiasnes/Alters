@@ -12,6 +12,7 @@ enum class EPackMovementStatus :uint8
 	EMS_Idle			UMETA(DisplayName = "Idle"),
 	EMS_MoveToTarget	UMETA(DisplayName = "MoveToTarget"),
 	EMS_Attacking		UMETA(DisplayName = "Attacking"),
+	EMS_Stunned			UMETA(DisplayName = "Stunned"),
 
 	EMS_MAX				UMETA(DisplayName = "DefaultMAX")
 };
@@ -54,6 +55,9 @@ public:
 	void SetInterpToMain(bool interp);
 	FRotator GetLookAtRotationYaw(FVector Target);
 
+	bool bStunned;
+	FTimerHandle StunHandle;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -74,6 +78,14 @@ public:
 	virtual void CombatSphereOnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 	UFUNCTION()
 	virtual void CombatSphereOnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+
+	// tells the AI if the player is within aggro range
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "AI")
+	bool bOverlappingAggroSphere;
+
+	// Move to target (UE4 is retarded and stops the movement for no reason when i apply stun)
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "AI")
+	AMain* MoveTo;
 
 	UFUNCTION(BlueprintCallable)
 	void MoveToTarget(class AMain* Target);
@@ -99,5 +111,10 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void HitPlayer();
+
+	UFUNCTION(BlueprintCallable)
+	void StunnStart(float Time);
+	UFUNCTION()
+	void StunnEnd();
 
 };
