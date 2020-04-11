@@ -16,6 +16,7 @@ AEnemy::AEnemy()
 	MovementSpeed = 450.f;
 	TurnRate = 250.f;
 
+	bBlocked = false;
 }
 
 // Called when the game starts or when spawned

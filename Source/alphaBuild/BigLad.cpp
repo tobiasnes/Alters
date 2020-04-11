@@ -324,8 +324,15 @@ void ABigLad::HitPlayer(float DMG)
 			float y = Direction.Y;
 			float z = Direction.Z;
 
+			if (bBlocked && !bIsCharging)
+			{
+				DMG = 0.f;
+				KnockBack = 0.f;
+				Direction = FVector(0.f);
+			}
+
 			UE_LOG(LogTemp, Warning, TEXT("x: %f y: %f z: %f"), x, y, z);
-			Cast<AMain>(CombatTarget)->TakeDMG(Damage, KnockBack, Direction);
+			Cast<AMain>(CombatTarget)->TakeDMG(DMG, KnockBack, Direction);
 		}
 		UE_LOG(LogTemp, Warning, TEXT("Player Got Hit!"));
 	}

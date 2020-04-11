@@ -218,7 +218,7 @@ void APack::HitPlayer()
 	if (MainInHitRange)
 	{
 		// cast TakeDMG function on player
-		if (CombatTarget)
+		if (CombatTarget && !bBlocked)
 		{
 			USceneComponent* SceneComp = Cast<USceneComponent>(GetComponentByClass(USceneComponent::StaticClass()));
 			const FRotator Rotation = SceneComp->GetComponentRotation();

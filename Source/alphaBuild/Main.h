@@ -169,7 +169,8 @@ public:
 	void Attack();
 	void Attack2();
 	void Attack4();
-	void Block();
+	void BlockStart();
+	void BlockEnd();
 
 	UFUNCTION(BlueprintCallable)
 	void AttackEnd();
@@ -178,5 +179,8 @@ public:
 	class UAnimMontage* AlterMontage;
 
 	void TakeDMG(float DamageValue, float KnockBackForce, FVector Direction);
+
+	UFUNCTION(BlueprintCallable)
+	void Die()
 
 };

@@ -29,6 +29,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Stats)
 	float Damage;
 
+	UPROPERTY()
+	bool bBlocked;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

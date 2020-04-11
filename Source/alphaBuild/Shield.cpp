@@ -100,18 +100,35 @@ void AShield::Equip(AMain* Char)
 void AShield::ShieldCombatOnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-
+	UE_LOG(LogTemp, Warning, TEXT("Overlap Shield Begin"));
+	if (OtherActor)
+	{
+		AEnemy* Enemy = Cast<AEnemy>(OtherActor);
+		if (Enemy)
+		{
+			Enemy->bBlocked = true;
+		}
+	}
 }
 
 void AShield::ShieldCombatOnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-
+	UE_LOG(LogTemp, Warning, TEXT("Overlap Shield End"));
+	if (OtherActor)
+	{
+		AEnemy* Enemy = Cast<AEnemy>(OtherActor);
+		if (Enemy)
+		{
+			Enemy->bBlocked = false;
+		}
+	}
 }
 
 void AShield::ActivateCollision()
 {
 	CombatCollision->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	UE_LOG(LogTemp, Warning, TEXT("Activate Collision"));
 }
 
 void AShield::DeactivateCollision()

@@ -227,6 +227,7 @@ void AMain::DashStyle()
 	}
 	if (EquippedShield)
 	{
+		EquippedShield->DeactivateCollision();
 		EquippedShield->Destroy();
 		EquippedShield = false;
 		UE_LOG(LogTemp, Warning, TEXT("DESTROYS SHIELD"))
@@ -277,11 +278,13 @@ void AMain::FuryStyle()
 	}
 	if (EquippedShield)
 	{
+		EquippedShield->DeactivateCollision();
 		EquippedShield->Destroy();
 		EquippedShield = false;
 	}
 	if (bFuryUnlocked)
 	{
+		
 		
 		if((bWeaponEquipped == true) && (StyleIndex != 1))
 		{
@@ -313,6 +316,7 @@ void AMain::FuryStyle()
 
 void AMain::DefenseStyle()
 {
+
 	bAttacking = false;
 	if (EquippedWeapon)
 	{
@@ -333,6 +337,7 @@ void AMain::DefenseStyle()
 			if (Shield)
 			{
 				Shield->Equip(this);
+				EquippedShield->DeactivateCollision();
 				SetActiveOverlappingItem(nullptr);
 			}
 
@@ -346,19 +351,25 @@ void AMain::DefenseStyle()
 void AMain::RangedStyle()
 {
 	bAttacking = false;
-		if (EquippedWeapon)
-		{
-			EquippedWeapon->DeactivateCollision();
-			EquippedWeapon->Destroy();
-			EquippedWeapon = false;
-		}
+	if (EquippedShield)
+	{
+		EquippedShield->DeactivateCollision();
+		EquippedShield->Destroy();
+		EquippedShield = false;
+	}
+	if (EquippedWeapon)
+	{
+		EquippedWeapon->DeactivateCollision();
+		EquippedWeapon->Destroy();
+		EquippedWeapon = false;
+	}
 
-		if (bRangedUnlocked)
-		{
-			StyleIndex = 4;
-			GetCharacterMovement()->MaxWalkSpeed = MovementSpeedRanged;
-		}
-		UE_LOG(LogTemp, Warning, TEXT("RangedStyle()"));
+	if (bRangedUnlocked)
+	{
+		StyleIndex = 4;
+		GetCharacterMovement()->MaxWalkSpeed = MovementSpeedRanged;
+	}
+	UE_LOG(LogTemp, Warning, TEXT("RangedStyle()"));
 }
 
 void AMain::Move1Pressed()
@@ -380,9 +391,7 @@ void AMain::Move1Pressed()
 
 		break;
 	case 3:
-
-		bBlocking = true;
-		Block();
+		BlockStart();
 
 		UE_LOG(LogTemp, Warning, TEXT("Defense Move1 Pressed"));
 		break;
@@ -396,7 +405,6 @@ void AMain::Move1Pressed()
 
 void AMain::Move1Released()
 {
-	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
 	bMove1Pressed = false;
 	switch (StyleIndex)
 	{
@@ -408,9 +416,8 @@ void AMain::Move1Released()
 		break;
 	case 3:
 
-		bBlocking = false;
+		BlockEnd();
 
-		AnimInstance->Montage_Stop(0.3f, AlterMontage);
 		UE_LOG(LogTemp, Warning, TEXT("We Got Here"))
 
 		UE_LOG(LogTemp, Warning, TEXT("Defense Move1 Released"));
@@ -597,8 +604,9 @@ void AMain::AttackEnd()
 	}
 }
 
-void AMain::Block()
+void AMain::BlockStart()
 {
+	bBlocking = true;
 	/* do
 	{
 		UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
@@ -619,8 +627,22 @@ void AMain::Block()
 			AnimInstance->Montage_Play(AlterMontage, 1.35f);
 			AnimInstance->Montage_JumpToSection(FName("Block_1"), AlterMontage);
 			UE_LOG(LogTemp, Warning, TEXT("YOURE HERE LOL"));
-			
+			if (EquippedShield)
+			{
+				EquippedShield->ActivateCollision();
+			}
 		}
+	}
+}
+
+void AMain::BlockEnd()
+{
+	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+	bBlocking = false;
+	AnimInstance->Montage_Stop(0.3f, AlterMontage);
+	if (EquippedShield)
+	{
+		EquippedShield->DeactivateCollision();
 	}
 }
 
@@ -630,6 +652,11 @@ void AMain::TakeDMG(float DamageValue, float KnockBackForce, FVector Direction)
 	LaunchCharacter(Direction * KnockBackForce, true, true); // launches player to make the player feel the force from the hit
 	if (HP <= 0.f)
 	{
-		Destroy(); // Destroy the player if he looses all HP
+		Die();
 	}
+}
+
+void AMain::Die()
+{
+
 }
