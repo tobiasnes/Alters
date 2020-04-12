@@ -181,6 +181,6 @@ public:
 	void TakeDMG(float DamageValue, float KnockBackForce, FVector Direction);
 
 	UFUNCTION(BlueprintCallable)
-	void Die()
+	void Die();
 
 };

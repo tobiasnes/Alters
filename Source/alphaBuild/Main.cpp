@@ -18,6 +18,7 @@
 #include "Enemy.h"
 #include "Components/BoxComponent.h"
 #include "Shield.h"
+#include "Lever.h"
 #include "Animation/AnimMontage.h"
 
 // Sets default values
@@ -174,6 +175,7 @@ void AMain::EquipPressed()
 		
 		AWeapon* Weapon = Cast<AWeapon>(ActiveOverlappingItem);
 		AShield* Shield = Cast<AShield>(ActiveOverlappingItem);
+		ALever* Lever = Cast<ALever>(ActiveOverlappingItem);
 		if (Weapon)
 		{
 			if (EquippedShield)
@@ -203,6 +205,10 @@ void AMain::EquipPressed()
 			Shield->Equip(this);
 			SetActiveOverlappingItem(nullptr);
 			bShieldEquipped = true;
+		}
+		else if (Lever)
+		{
+			Lever->PullLever();
 		}
 	}
 }
