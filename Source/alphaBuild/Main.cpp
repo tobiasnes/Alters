@@ -95,6 +95,11 @@ void AMain::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if (GetActorLocation().Z < -400.f)
+	{
+		Die();
+	}
+
 	if (bInterpToEnemy && CombatTarget)
 	{
 		FRotator LookAtYaw = GetLookAtRotationYaw(CombatTarget->GetActorLocation());
@@ -664,5 +669,5 @@ void AMain::TakeDMG(float DamageValue, float KnockBackForce, FVector Direction)
 
 void AMain::Die()
 {
-
+	UE_LOG(LogTemp, Warning, TEXT("You Died!"));
 }
