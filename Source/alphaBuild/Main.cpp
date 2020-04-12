@@ -491,7 +491,7 @@ void AMain::Dash()
 		bDashing = true;
 		SpeedBeforeDash = FVector(GetActorForwardVector().X, GetActorForwardVector().Y, 0.f) * MovementSpeedDash;
 		GetCharacterMovement()->BrakingFrictionFactor = 0.f; // Removes friction
-		LaunchCharacter(FVector(GetActorForwardVector().X, GetActorForwardVector().Y, 0.f) * DashDistance, true, true);
+		LaunchCharacter(FVector(GetActorForwardVector().X, GetActorForwardVector().Y, 0.1f) * DashDistance, true, true);
 		bCanDash = false; // Disables Dash
 		GetWorldTimerManager().SetTimer(DashHandle, this, &AMain::StopDashing, DashStop, false); // Sets timer to stop dashing
 	}
