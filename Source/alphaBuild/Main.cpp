@@ -15,6 +15,7 @@
 #include "Components/SkeletalMeshComponent.h"
 #include "Animation/AnimInstance.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Kismet/GameplayStatics.h"
 #include "Enemy.h"
 #include "Components/BoxComponent.h"
 #include "Shield.h"
@@ -76,6 +77,8 @@ AMain::AMain()
 	bInterpToEnemy = false;
 	
 	bBlocking = false;
+
+	AlphaEdge = FVector(15650.f, 0.f, 0.f);
 }
 
 // Called when the game starts or when spawned
@@ -106,6 +109,12 @@ void AMain::Tick(float DeltaTime)
 		FRotator InterpRotation = FMath::RInterpTo(GetActorRotation(), LookAtYaw, DeltaTime, InterpSpeed);
 
 		SetActorRotation(InterpRotation);
+	}
+
+	PlayerLocation = GetActorLocation();
+	if (PlayerLocation.X >= AlphaEdge.X)
+	{
+		Die();
 	}
 
 }
@@ -669,5 +678,12 @@ void AMain::TakeDMG(float DamageValue, float KnockBackForce, FVector Direction)
 
 void AMain::Die()
 {
-	UE_LOG(LogTemp, Warning, TEXT("You Died!"));
+	//UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+
+	//if (AnimInstance && AlterMontage)
+	//{
+	//	AnimInstance->Montage_Play(AlterMontage, 1.35f);
+	//	AnimInstance->Montage_JumpToSection(FName("Death"), AlterMontage);
+	//}
+	UGameplayStatics::OpenLevel(this, TEXT("Game_Over"), false);
 }

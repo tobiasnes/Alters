@@ -178,6 +178,13 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Anims")
 	class UAnimMontage* AlterMontage;
 
+	FVector AlphaEdge;
+
+	FVector PlayerLocation;
+
+	//UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Anims")
+		//class UAnimMontage* DeathMontage;
+
 	void TakeDMG(float DamageValue, float KnockBackForce, FVector Direction);
 
 	UFUNCTION(BlueprintCallable)
