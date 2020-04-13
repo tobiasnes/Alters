@@ -3,6 +3,7 @@
 
 #include "Enemy.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "TimerManager.h"
 
 // Sets default values
 AEnemy::AEnemy()
@@ -17,6 +18,7 @@ AEnemy::AEnemy()
 	TurnRate = 250.f;
 
 	bBlocked = false;
+	bCanTakeDamage;
 }
 
 // Called when the game starts or when spawned
@@ -46,13 +48,23 @@ void AEnemy::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 }
 
-
 void AEnemy::TakeDMG(float DamageValue, float KnockBackForce, FVector Direction)
 {
-	HP -= DamageValue; // Deals Damage
-	LaunchCharacter(Direction * KnockBackForce, true, true); // launches enemy to make the player feel the force from the hit
+	if (bCanTakeDamage)
+	{
+		HP -= DamageValue; // Deals Damage
+		LaunchCharacter(Direction * KnockBackForce, true, true); // launches enemy to make the player feel the force from the hit
+		bCanTakeDamage = false;
+		GetWorldTimerManager().SetTimer(DMGHandle, this, &AEnemy::EnableTakeDMG, 0.1f);
+	}
 	if (HP <= 0.f)
 	{
 		Destroy(); // Destroy the enemy if it looses all HP
 	}
+}
+
+void AEnemy::EnableTakeDMG()
+{
+	bCanTakeDamage = true;
+	GetWorldTimerManager().ClearTimer(DMGHandle);
 }
