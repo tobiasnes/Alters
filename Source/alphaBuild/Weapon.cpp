@@ -109,12 +109,12 @@ void AWeapon::Equip(AMain* Char)
 void AWeapon::CombatOnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	UE_LOG(LogTemp, Warning, TEXT("EnemyHit"));
 	if (OtherActor)
 	{
 		AEnemy* Enemy = Cast<AEnemy>(OtherActor);
 		if (Enemy)
 		{
+			UE_LOG(LogTemp, Warning, TEXT("EnemyHit"));
 			FRotator ToEnemyRotation = UKismetMathLibrary::FindLookAtRotation(EquippedOn->GetActorLocation(), Enemy->GetActorLocation());
 			FRotator YawToEnemyRotation = FRotator(0.f, ToEnemyRotation.Yaw, 0.f);
 			// get forward vector

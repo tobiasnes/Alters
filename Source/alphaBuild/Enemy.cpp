@@ -18,7 +18,7 @@ AEnemy::AEnemy()
 	TurnRate = 250.f;
 
 	bBlocked = false;
-	bCanTakeDamage;
+	bCanTakeDamage = true;
 }
 
 // Called when the game starts or when spawned
