@@ -233,79 +233,78 @@ void AMain::EquipReleased()
 
 void AMain::DashStyle()
 {
-	bAttacking = false;
-	
-	if (EquippedWeapon)
+	if (StyleIndex != 1)
 	{
-		EquippedWeapon->DeactivateCollision();
-		//EquippedWeapon->Destroy();
-		//EquippedWeapon = false;
-
-		EquippedWeapon->KnifeMesh();
-		EquippedWeapon->CombatCollision->SetRelativeScale3D(FVector(0.3f, 0.25f, 0.6f));
-		EquippedWeapon->CombatCollision->SetRelativeLocation(FVector(0.5f, 0.f, 30.f));
-	}
-	if (EquippedShield)
-	{
-		EquippedShield->DeactivateCollision();
-		EquippedShield->Destroy();
-		EquippedShield = false;
-		UE_LOG(LogTemp, Warning, TEXT("DESTROYS SHIELD"))
-	}
-	if (bDashKnifeUnlocked)
-	{
-		if ((bWeaponEquipped == true) && (StyleIndex != 2))
+		if (EquippedWeapon)
 		{
+			EquippedWeapon->DeactivateCollision();
+			//EquippedWeapon->Destroy();
+			//EquippedWeapon = false;
 
-			GetWorld()->SpawnActor<AWeapon>(SpawnerClass, FTransform(GetActorLocation()));
-
-			AWeapon* Weapon = Cast<AWeapon>(ActiveOverlappingItem);
-			if (Weapon)
+			EquippedWeapon->KnifeMesh();
+			EquippedWeapon->CombatCollision->SetRelativeScale3D(FVector(0.3f, 0.25f, 0.6f));
+			EquippedWeapon->CombatCollision->SetRelativeLocation(FVector(0.5f, 0.f, 30.f));
+		}
+		if (EquippedShield)
+		{
+			EquippedShield->DeactivateCollision();
+			EquippedShield->Destroy();
+			EquippedShield = false;
+			UE_LOG(LogTemp, Warning, TEXT("DESTROYS SHIELD"))
+		}
+		if (bDashKnifeUnlocked)
+		{
+			if ((bWeaponEquipped == true) && (StyleIndex != 2))
 			{
-				Weapon->Equip(this);
-				SetActiveOverlappingItem(nullptr);
-				if (EquippedWeapon)
-				{
-					EquippedWeapon->DeactivateCollision();
-					//EquippedWeapon->Destroy();
-					//EquippedWeapon = false;
 
-					EquippedWeapon->KnifeMesh();
-					EquippedWeapon->CombatCollision->SetRelativeScale3D(FVector(0.3f, 0.25f, 0.6f));
-					EquippedWeapon->CombatCollision->SetRelativeLocation(FVector(0.5f, 0.f, 30.f));
+				GetWorld()->SpawnActor<AWeapon>(SpawnerClass, FTransform(GetActorLocation()));
+
+				AWeapon* Weapon = Cast<AWeapon>(ActiveOverlappingItem);
+				if (Weapon)
+				{
+					Weapon->Equip(this);
+					SetActiveOverlappingItem(nullptr);
+					if (EquippedWeapon)
+					{
+						EquippedWeapon->DeactivateCollision();
+						//EquippedWeapon->Destroy();
+						//EquippedWeapon = false;
+
+						EquippedWeapon->KnifeMesh();
+						EquippedWeapon->CombatCollision->SetRelativeScale3D(FVector(0.3f, 0.25f, 0.6f));
+						EquippedWeapon->CombatCollision->SetRelativeLocation(FVector(0.5f, 0.f, 30.f));
+					}
 				}
+
 			}
 
 		}
-		
-	}
 
-	StyleIndex = 1;
-	GetCharacterMovement()->MaxWalkSpeed = MovementSpeedDash;
-	UE_LOG(LogTemp, Warning, TEXT("DashStyle()"));
+		StyleIndex = 1;
+		GetCharacterMovement()->MaxWalkSpeed = MovementSpeedDash;
+	}
 	
+	UE_LOG(LogTemp, Warning, TEXT("DashStyle()"));
 }
 
 void AMain::FuryStyle()
 {
-	bAttacking = false;
-	if (EquippedWeapon)
+	if (bFuryUnlocked && (StyleIndex != 2))
 	{
-		EquippedWeapon->DeactivateCollision();
-		EquippedWeapon->SwordMesh();
-		EquippedWeapon->CombatCollision->SetRelativeScale3D(FVector(0.35f, 0.25f, 1.6f));
-		EquippedWeapon->CombatCollision->SetRelativeLocation(FVector(0.5f, 0.f, 60.f));
-	}
-	if (EquippedShield)
-	{
-		EquippedShield->DeactivateCollision();
-		EquippedShield->Destroy();
-		EquippedShield = false;
-	}
-	if (bFuryUnlocked)
-	{
-		
-		
+		bAttacking = false;
+		if (EquippedWeapon)
+		{
+			EquippedWeapon->DeactivateCollision();
+			EquippedWeapon->SwordMesh();
+			EquippedWeapon->CombatCollision->SetRelativeScale3D(FVector(0.35f, 0.25f, 1.6f));
+			EquippedWeapon->CombatCollision->SetRelativeLocation(FVector(0.5f, 0.f, 60.f));
+		}
+		if (EquippedShield)
+		{
+			EquippedShield->DeactivateCollision();
+			EquippedShield->Destroy();
+			EquippedShield = false;
+		}
 		if((bWeaponEquipped == true) && (StyleIndex != 1))
 		{
 
@@ -336,17 +335,15 @@ void AMain::FuryStyle()
 
 void AMain::DefenseStyle()
 {
-
-	bAttacking = false;
-	if (EquippedWeapon)
+	if (bDefenceUnlocked && (StyleIndex != 3))
 	{
-		EquippedWeapon->DeactivateCollision();
-		EquippedWeapon->Destroy();
-		EquippedWeapon = false;
-	}
-
-	if (bDefenceUnlocked)
-	{
+		bAttacking = false;
+		if (EquippedWeapon)
+		{
+			EquippedWeapon->DeactivateCollision();
+			EquippedWeapon->Destroy();
+			EquippedWeapon = false;
+		}
 		if ((bShieldEquipped == true) && (StyleIndex != 3))
 		{
 
@@ -370,22 +367,21 @@ void AMain::DefenseStyle()
 
 void AMain::RangedStyle()
 {
-	bAttacking = false;
-	if (EquippedShield)
-	{
-		EquippedShield->DeactivateCollision();
-		EquippedShield->Destroy();
-		EquippedShield = false;
-	}
-	if (EquippedWeapon)
-	{
-		EquippedWeapon->DeactivateCollision();
-		EquippedWeapon->Destroy();
-		EquippedWeapon = false;
-	}
-
 	if (bRangedUnlocked)
 	{
+		bAttacking = false;
+		if (EquippedShield)
+		{
+			EquippedShield->DeactivateCollision();
+			EquippedShield->Destroy();
+			EquippedShield = false;
+		}
+		if (EquippedWeapon)
+		{
+			EquippedWeapon->DeactivateCollision();
+			EquippedWeapon->Destroy();
+			EquippedWeapon = false;
+		}
 		StyleIndex = 4;
 		GetCharacterMovement()->MaxWalkSpeed = MovementSpeedRanged;
 	}

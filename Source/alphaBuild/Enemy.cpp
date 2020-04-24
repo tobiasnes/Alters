@@ -55,6 +55,7 @@ void AEnemy::TakeDMG(float DamageValue, float KnockBackForce, FVector Direction)
 		HP -= DamageValue; // Deals Damage
 		LaunchCharacter(Direction * KnockBackForce, true, true); // launches enemy to make the player feel the force from the hit
 		bCanTakeDamage = false;
+		GetCharacterMovement()->BrakingFrictionFactor = 0.f; // Removes friction
 		GetWorldTimerManager().SetTimer(DMGHandle, this, &AEnemy::EnableTakeDMG, 0.1f);
 	}
 	if (HP <= 0.f)
@@ -66,5 +67,6 @@ void AEnemy::TakeDMG(float DamageValue, float KnockBackForce, FVector Direction)
 void AEnemy::EnableTakeDMG()
 {
 	bCanTakeDamage = true;
+	GetCharacterMovement()->BrakingFrictionFactor = 2.f; // Sets friction back to default
 	GetWorldTimerManager().ClearTimer(DMGHandle);
 }

@@ -28,7 +28,7 @@ AWeapon::AWeapon()
 	LightDamage = 25.f;
 	HeavyDamage = 35.f;
 	DashDamage = 15.f;
-	KnockBack = 1000.f;
+	KnockBack = 500.f;
 
 	bFuryGet = false;
 
