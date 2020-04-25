@@ -36,8 +36,6 @@ public:
 	float MovementSpeedRanged;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Movement)
 	float TurnRate{ 540.f };
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Movement)
-	bool bSliding;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Movement)
 	int StyleIndex;
