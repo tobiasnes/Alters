@@ -6,6 +6,7 @@
 #include "Components/StaticMeshComponent.h"
 #include "Particles/ParticleSystemComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetMathLibrary.h"
 #include "Engine/World.h"
 #include "Sound/SoundCue.h"
 #include "Main.h"
@@ -69,7 +70,10 @@ void AProjectile::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActo
 		AMain* Main = Cast<AMain>(OtherActor);
 		if (Main)
 		{
-			FVector Direction = GetActorLocation() - Main->GetActorLocation();
+			FRotator ToTargetRotation = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), Main->GetActorLocation());
+			FRotator YawToTargetRotation = FRotator(0.f, ToTargetRotation.Yaw, 0.f);
+			// get forward vector
+			FVector Direction = FRotationMatrix(YawToTargetRotation).GetUnitAxis(EAxis::X);
 			Main->TakeDMG(Damage, KnockBack, ForwardVector + FVector(0.f, 0.f, 0.1f));
 		}
 	}
