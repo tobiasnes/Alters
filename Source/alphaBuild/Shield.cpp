@@ -127,11 +127,15 @@ void AShield::ShieldCombatOnOverlapEnd(UPrimitiveComponent* OverlappedComponent,
 
 void AShield::ActivateCollision()
 {
+	//Mesh->SetRelativeLocation(FVector(0.f, 10.f, 0.f));
+	Mesh->SetWorldScale3D(FVector(2.f, 1.f, 2.f));
 	CombatCollision->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	UE_LOG(LogTemp, Warning, TEXT("Activate Collision"));
 }
 
 void AShield::DeactivateCollision()
 {
+	//Mesh->SetRelativeLocation(FVector(0.f, 10.f, 6.f));
+	Mesh->SetWorldScale3D(FVector(0.5f, 1.f, 0.5f));
 	CombatCollision->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
