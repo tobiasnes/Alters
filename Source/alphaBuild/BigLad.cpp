@@ -278,15 +278,14 @@ void ABigLad::MoveToTarget(class AMain* Target)
 
 void ABigLad::AttackBoxOnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	MainInHitRange = true;
-
-	if (bIsCharging)
+	if (OtherActor)
 	{
-		if (OtherActor)
+		AMain* Main = Cast<AMain>(OtherActor);
 		{
-			AMain* Main = Cast<AMain>(OtherActor);
+			if (Main)
 			{
-				if (Main)
+				MainInHitRange = true;
+				if (bIsCharging)
 				{
 					HitPlayer(ChargeDamage);
 					GetWorld()->GetTimerManager().ClearTimer(ChargeHandle);
@@ -301,8 +300,16 @@ void ABigLad::AttackBoxOnOverlapBegin(UPrimitiveComponent* OverlappedComponent, 
 
 void ABigLad::AttackBoxOnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-	MainInHitRange = false;
-
+	if (OtherActor)
+	{
+		AMain* Main = Cast<AMain>(OtherActor);
+		{
+			if (Main)
+			{
+				MainInHitRange = false;
+			}
+		}
+	}
 	UE_LOG(LogTemp, Warning, TEXT("AttackBoxOnOverlapEnd()"));
 }
 

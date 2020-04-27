@@ -202,14 +202,31 @@ void APack::TakeDMG(float DamageValue, float KnockBackForce, FVector Direction)
 
 void APack::AttackBoxOnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	MainInHitRange = true;
-
+	if (OtherActor)
+	{
+		AMain* Main = Cast<AMain>(OtherActor);
+		{
+			if (Main)
+			{
+				MainInHitRange = true;
+			}
+		}
+	}
 	UE_LOG(LogTemp, Warning, TEXT("AttackBoxOnOverlapBegin()"));
 }
 
 void APack::AttackBoxOnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-	MainInHitRange = false;
+	if (OtherActor)
+	{
+		AMain* Main = Cast<AMain>(OtherActor);
+		{
+			if (Main)
+			{
+				MainInHitRange = false;
+			}
+		}
+	}
 	UE_LOG(LogTemp, Warning, TEXT("AttackBoxOnOverlapEnd()"));
 }
 

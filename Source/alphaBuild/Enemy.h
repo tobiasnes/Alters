@@ -29,7 +29,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Stats)
 	float Damage;
 
-	UPROPERTY()
+	UPROPERTY(VisibleAnywhere)
 	bool bBlocked;
 
 	FTimerHandle DMGHandle;
