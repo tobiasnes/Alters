@@ -248,6 +248,7 @@ void AMain::DashStyle()
 		if (EquippedShield)
 		{
 			EquippedShield->DeactivateCollision();
+			EquippedShield->CombatCollision->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 			EquippedShield->Destroy();
 			EquippedShield = false;
 			UE_LOG(LogTemp, Warning, TEXT("DESTROYS SHIELD"))
@@ -302,6 +303,7 @@ void AMain::FuryStyle()
 		if (EquippedShield)
 		{
 			EquippedShield->DeactivateCollision();
+			EquippedShield->CombatCollision->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 			EquippedShield->Destroy();
 			EquippedShield = false;
 		}
@@ -373,6 +375,7 @@ void AMain::RangedStyle()
 		if (EquippedShield)
 		{
 			EquippedShield->DeactivateCollision();
+			EquippedShield->CombatCollision->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 			EquippedShield->Destroy();
 			EquippedShield = false;
 		}

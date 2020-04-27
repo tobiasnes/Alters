@@ -107,6 +107,10 @@ void AShield::ShieldCombatOnOverlapBegin(UPrimitiveComponent* OverlappedComponen
 		if (Enemy)
 		{
 			Enemy->bBlocked = true;
+			if (Enemy->bBlocked)
+			{
+				UE_LOG(LogTemp, Warning, TEXT("Overlap Shield Begin"));
+			}
 		}
 	}
 }
