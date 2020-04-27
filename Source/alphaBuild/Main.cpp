@@ -684,5 +684,5 @@ void AMain::Die()
 	//	AnimInstance->Montage_Play(AlterMontage, 1.35f);
 	//	AnimInstance->Montage_JumpToSection(FName("Death"), AlterMontage);
 	//}
-	UGameplayStatics::OpenLevel(this, TEXT("Game_Over"), false);
+	//UGameplayStatics::OpenLevel(this, TEXT("Game_Over"), false);
 }
