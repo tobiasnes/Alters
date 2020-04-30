@@ -40,6 +40,9 @@ public:
 	UPROPERTY(EditAnywhere, BluePrintReadWrite, Category = "Item | Particles")
 	bool bWeaponParticles;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item | Particles")
+	class UParticleSystem* ShieldBashParticles;
+
 	UPROPERTY(EditAnywhere, BluePrintReadWrite, Category = "Item | Sound")
 	class USoundCue* OnEquipSound;
 

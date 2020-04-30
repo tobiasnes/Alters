@@ -8,12 +8,14 @@
 #include "Enemy.h"
 #include "Pack.h"
 #include "Engine/SkeletalMeshSocket.h"
+#include "Engine/World.h"
 #include "Sound/SoundCue.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Particles/ParticleSystemComponent.h"
 #include "Components/BoxComponent.h"
 #include "GameFramework/PlayerController.h"
+#include "Particles/ParticleSystemComponent.h"
 
 AShield::AShield()
 {
@@ -185,6 +187,10 @@ void AShield::BashOnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor*
 
 void AShield::ActivateBashCollision()
 {
+	if (ShieldBashParticles)
+	{
+		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ShieldBashParticles, GetActorLocation(), FRotator(0.f), true);
+	}
 	Mesh->SetWorldScale3D(FVector(2.f, 1.f, 2.f));
 	BashCollision->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	UE_LOG(LogTemp, Warning, TEXT("Activate Collision"));
