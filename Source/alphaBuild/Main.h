@@ -24,6 +24,8 @@ public:
 	// Basic player stats
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Stats)
 	float HP;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Stats)
+	bool Dead;
 
 	// Base movement values
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Movement)

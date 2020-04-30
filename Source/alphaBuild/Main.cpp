@@ -67,6 +67,7 @@ AMain::AMain()
 	bShieldEquipped = false;
 
 	HP = 100;
+	Dead = false;
 
 	bDashAttack = false;
 
@@ -233,7 +234,7 @@ void AMain::EquipReleased()
 
 void AMain::DashStyle()
 {
-	if (StyleIndex != 1)
+	if ((StyleIndex != 1) && (!Dead))
 	{
 		if (EquippedWeapon)
 		{
@@ -290,7 +291,7 @@ void AMain::DashStyle()
 
 void AMain::FuryStyle()
 {
-	if (bFuryUnlocked && (StyleIndex != 2))
+	if (bFuryUnlocked && (StyleIndex != 2) && (!Dead))
 	{
 		bAttacking = false;
 		if (EquippedWeapon)
@@ -337,7 +338,7 @@ void AMain::FuryStyle()
 
 void AMain::DefenseStyle()
 {
-	if (bDefenceUnlocked && (StyleIndex != 3))
+	if (bDefenceUnlocked && (StyleIndex != 3) && (!Dead))
 	{
 		bAttacking = false;
 		if (EquippedWeapon)
@@ -369,7 +370,7 @@ void AMain::DefenseStyle()
 
 void AMain::RangedStyle()
 {
-	if (bRangedUnlocked)
+	if (bRangedUnlocked && (StyleIndex != 4) && (!Dead))
 	{
 		bAttacking = false;
 		if (EquippedShield)
@@ -394,31 +395,34 @@ void AMain::RangedStyle()
 void AMain::Move1Pressed()
 {
 	bMove1Pressed = true;
-	switch (StyleIndex)
+	if (!Dead)
 	{
-	case 1:
-		UE_LOG(LogTemp, Warning, TEXT("Dash Move1 Pressed"));
-		if (bDashing && bDashKnifeUnlocked)
+		switch (StyleIndex)
 		{
-			Attack4();
+		case 1:
+			UE_LOG(LogTemp, Warning, TEXT("Dash Move1 Pressed"));
+			if (bDashing && bDashKnifeUnlocked)
+			{
+				Attack4();
+			}
+			break;
+		case 2:
+			UE_LOG(LogTemp, Warning, TEXT("Fury Move1 Pressed"));
+
+			Attack();
+
+			break;
+		case 3:
+			BlockStart();
+
+			UE_LOG(LogTemp, Warning, TEXT("Defense Move1 Pressed"));
+			break;
+		case 4:
+			UE_LOG(LogTemp, Warning, TEXT("Ranged Move1 Pressed"));
+			break;
+		default:
+			break;
 		}
-		break;
-	case 2:
-		UE_LOG(LogTemp, Warning, TEXT("Fury Move1 Pressed"));
-		
-		Attack();
-
-		break;
-	case 3:
-		BlockStart();
-
-		UE_LOG(LogTemp, Warning, TEXT("Defense Move1 Pressed"));
-		break;
-	case 4:
-		UE_LOG(LogTemp, Warning, TEXT("Ranged Move1 Pressed"));
-		break;
-	default:
-		break;
 	}
 }
 
@@ -452,29 +456,32 @@ void AMain::Move1Released()
 void AMain::Move2Pressed()
 {
 	bMove2Pressed = true;
-	switch (StyleIndex)
+	if (!Dead)
 	{
-	case 1:
-		Dash();
-		UE_LOG(LogTemp, Warning, TEXT("Dash Move2 Pressed"));
-		break;
-	case 2:
-		UE_LOG(LogTemp, Warning, TEXT("Fury Move2 Pressed"));
+		switch (StyleIndex)
+		{
+		case 1:
+			Dash();
+			UE_LOG(LogTemp, Warning, TEXT("Dash Move2 Pressed"));
+			break;
+		case 2:
+			UE_LOG(LogTemp, Warning, TEXT("Fury Move2 Pressed"));
 
-		Attack2();
+			Attack2();
 
-		break;
-	case 3:
-		UE_LOG(LogTemp, Warning, TEXT("Defense Move2 Pressed"));
+			break;
+		case 3:
+			UE_LOG(LogTemp, Warning, TEXT("Defense Move2 Pressed"));
 
-		ShieldStun();
+			ShieldStun();
 
-		break;
-	case 4:
-		UE_LOG(LogTemp, Warning, TEXT("Ranged Move2 Pressed"));
-		break;
-	default:
-		break;
+			break;
+		case 4:
+			UE_LOG(LogTemp, Warning, TEXT("Ranged Move2 Pressed"));
+			break;
+		default:
+			break;
+		}
 	}
 }
 
@@ -695,6 +702,9 @@ void AMain::TakeDMG(float DamageValue, float KnockBackForce, FVector Direction)
 
 void AMain::Die()
 {
+	GetCharacterMovement()->MaxWalkSpeed = 0.f;
+	GetCharacterMovement()->RotationRate = FRotator(0.f);
+	Dead = true;
 	//UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
 
 	//if (AnimInstance && AlterMontage)
