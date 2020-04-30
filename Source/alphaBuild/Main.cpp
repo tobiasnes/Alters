@@ -466,6 +466,9 @@ void AMain::Move2Pressed()
 		break;
 	case 3:
 		UE_LOG(LogTemp, Warning, TEXT("Defense Move2 Pressed"));
+
+		ShieldStun();
+
 		break;
 	case 4:
 		UE_LOG(LogTemp, Warning, TEXT("Ranged Move2 Pressed"));
@@ -662,6 +665,21 @@ void AMain::BlockEnd()
 	if (EquippedShield)
 	{
 		EquippedShield->DeactivateCollision();
+	}
+}
+
+void AMain::ShieldStun()
+{
+	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+	
+	if (!bBlocking)
+	{
+		if (AnimInstance && AlterMontage)
+		{
+			AnimInstance->Montage_Play(AlterMontage, 1.35f);
+			AnimInstance->Montage_JumpToSection(FName("ShieldStun"), AlterMontage);
+			UE_LOG(LogTemp, Warning, TEXT("YOURE HERE LOL"));
+		}
 	}
 }
 

@@ -171,6 +171,7 @@ public:
 	void Attack4();
 	void BlockStart();
 	void BlockEnd();
+	void ShieldStun();
 
 	UFUNCTION(BlueprintCallable)
 	void AttackEnd();

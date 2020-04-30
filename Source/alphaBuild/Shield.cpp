@@ -6,6 +6,7 @@
 #include "Components/SkeletalMeshComponent.h"
 #include "Main.h"
 #include "Enemy.h"
+#include "Pack.h"
 #include "Engine/SkeletalMeshSocket.h"
 #include "Sound/SoundCue.h"
 #include "Kismet/GameplayStatics.h"
@@ -22,7 +23,11 @@ AShield::AShield()
 	CombatCollision = CreateDefaultSubobject<UBoxComponent>(TEXT("CombatCollision"));
 	CombatCollision->SetupAttachment(GetRootComponent());
 
+	BashCollision = CreateDefaultSubobject<UBoxComponent>(TEXT("BashCollision"));
+	BashCollision->SetupAttachment(GetRootComponent());
+
 	KnockBack = 4000.f;
+	StunTime = 1.5f;
 }
 
 void AShield::BeginPlay()
@@ -36,6 +41,12 @@ void AShield::BeginPlay()
 	CombatCollision->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
 	CombatCollision->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Overlap);
 
+	BashCollision->OnComponentBeginOverlap.AddDynamic(this, &AShield::BashOnOverlapBegin);
+	BashCollision->OnComponentEndOverlap.AddDynamic(this, &AShield::BashOnOverlapEnd);
+	BashCollision->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	BashCollision->SetCollisionObjectType(ECollisionChannel::ECC_WorldDynamic);
+	BashCollision->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
+	BashCollision->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Overlap);
 }
 
 void AShield::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
@@ -76,7 +87,7 @@ void AShield::Equip(AMain* Char)
 		SkeletalMesh->SetSimulatePhysics(false);
 
 		const USkeletalMeshSocket* LeftElbowSocket = Char->GetMesh()->GetSocketByName("Left_Elbow_jointSocket");
-		//EquippedOn = Cast<AMain>(Char);
+		EquippedOn = Cast<AMain>(Char);
 
 		if (LeftElbowSocket)
 		{
@@ -142,4 +153,45 @@ void AShield::DeactivateCollision()
 	//Mesh->SetRelativeLocation(FVector(0.f, 10.f, 6.f));
 	Mesh->SetWorldScale3D(FVector(0.5f, 1.f, 0.5f));
 	CombatCollision->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+}
+
+void AShield::BashOnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if (OtherActor)
+	{
+		AEnemy* Enemy = Cast<AEnemy>(OtherActor);
+		if (Enemy)
+		{
+			FRotator ToEnemyRotation = UKismetMathLibrary::FindLookAtRotation(EquippedOn->GetActorLocation(), Enemy->GetActorLocation());
+			FRotator YawToEnemyRotation = FRotator(0.f, ToEnemyRotation.Yaw, 0.f);
+			// get forward vector
+			FVector Direction = FRotationMatrix(YawToEnemyRotation).GetUnitAxis(EAxis::X);
+			Enemy->TakeDMG(0.f, KnockBack, Direction);
+		}
+		APack* Pack = Cast<APack>(OtherActor);
+		if (Pack)
+		{
+			Pack->StunnStart(StunTime);
+		}
+	}
+}
+
+void AShield::BashOnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+
+}
+
+void AShield::ActivateBashCollision()
+{
+	Mesh->SetWorldScale3D(FVector(2.f, 1.f, 2.f));
+	BashCollision->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	UE_LOG(LogTemp, Warning, TEXT("Activate Collision"));
+}
+
+void AShield::DeactivateBashCollision()
+{
+	Mesh->SetWorldScale3D(FVector(0.5f, 1.f, 0.5f));
+	BashCollision->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }

@@ -46,6 +46,9 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Item | Combat")
 		class UBoxComponent* CombatCollision;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Item | Combat")
+		class UBoxComponent* BashCollision;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item | Combat")
 		float KnockBack;
 
@@ -73,10 +76,27 @@ public:
 		void ShieldCombatOnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 			UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
+	UFUNCTION()
+		void BashOnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+			UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	UFUNCTION()
+		void BashOnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+			UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+
 	UFUNCTION(BlueprintCallable)
 		void ActivateCollision();
 
 	UFUNCTION(BlueprintCallable)
 		void DeactivateCollision();
+
+	UFUNCTION(BlueprintCallable)
+		void ActivateBashCollision();
+
+	UFUNCTION(BlueprintCallable)
+		void DeactivateBashCollision();
+
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Item | Combat")
+		float StunTime;
 	
 };
