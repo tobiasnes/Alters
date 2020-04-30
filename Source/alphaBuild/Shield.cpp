@@ -14,6 +14,7 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "Particles/ParticleSystemComponent.h"
 #include "Components/BoxComponent.h"
+#include "Components/SphereComponent.h"
 #include "GameFramework/PlayerController.h"
 #include "Particles/ParticleSystemComponent.h"
 
@@ -25,7 +26,7 @@ AShield::AShield()
 	CombatCollision = CreateDefaultSubobject<UBoxComponent>(TEXT("CombatCollision"));
 	CombatCollision->SetupAttachment(GetRootComponent());
 
-	BashCollision = CreateDefaultSubobject<UBoxComponent>(TEXT("BashCollision"));
+	BashCollision = CreateDefaultSubobject<USphereComponent>(TEXT("BashCollision"));
 	BashCollision->SetupAttachment(GetRootComponent());
 
 	KnockBack = 4000.f;
@@ -168,7 +169,8 @@ void AShield::BashOnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActo
 			FRotator ToEnemyRotation = UKismetMathLibrary::FindLookAtRotation(EquippedOn->GetActorLocation(), Enemy->GetActorLocation());
 			FRotator YawToEnemyRotation = FRotator(0.f, ToEnemyRotation.Yaw, 0.f);
 			// get forward vector
-			FVector Direction = FRotationMatrix(YawToEnemyRotation).GetUnitAxis(EAxis::X);
+			FVector Direction = FRotationMatrix(YawToEnemyRotation).GetUnitAxis(EAxis::Y);
+			Direction += FVector(0.f, 0.f, 0.1f);
 			Enemy->TakeDMG(0.f, KnockBack, Direction);
 		}
 		APack* Pack = Cast<APack>(OtherActor);
