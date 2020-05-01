@@ -25,7 +25,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Stats)
 	float HP;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Stats)
-	bool Dead;
+	bool Frozen;
 
 	// Base movement values
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Movement)
@@ -191,6 +191,9 @@ public:
 	void TakeDMG(float DamageValue, float KnockBackForce, FVector Direction);
 
 	UFUNCTION(BlueprintCallable)
-	void Die();
+	void Freeze();
+
+	UFUNCTION()
+	void UnFreeze(float SavedMaxWalkSpeed, FRotator SavedRotationRate);
 
 };

@@ -20,6 +20,16 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "SkeletalMesh")
 	class USkeletalMeshComponent* SkeletalMesh;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Saved Player Values")
+	float SavedMaxWalkSpeed;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Saved Player Values")
+	FRotator SavedRotationRate;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Item | Cat")
+	class AMain* Target;
+
+	float Time;
 	
 protected:
 	// Called when the game starts or when spawned
@@ -28,6 +38,9 @@ protected:
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
+	UFUNCTION()
+	FRotator GetLookAtRotationYaw(FVector TargetLocation);
 
 	UFUNCTION()
 	virtual void OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,

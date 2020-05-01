@@ -67,7 +67,7 @@ AMain::AMain()
 	bShieldEquipped = false;
 
 	HP = 100;
-	Dead = false;
+	Frozen = false;
 
 	bDashAttack = false;
 
@@ -101,7 +101,7 @@ void AMain::Tick(float DeltaTime)
 
 	if (GetActorLocation().Z < -400.f)
 	{
-		Die();
+		Freeze();
 	}
 
 	if (bInterpToEnemy && CombatTarget)
@@ -115,7 +115,8 @@ void AMain::Tick(float DeltaTime)
 	PlayerLocation = GetActorLocation();
 	if (PlayerLocation.X >= AlphaEdge.X)
 	{
-		Die();
+		Freeze();
+		HP = 0;
 	}
 
 }
@@ -234,7 +235,7 @@ void AMain::EquipReleased()
 
 void AMain::DashStyle()
 {
-	if ((StyleIndex != 1) && (!Dead))
+	if ((StyleIndex != 1) && (!Frozen))
 	{
 		if (EquippedWeapon)
 		{
@@ -291,7 +292,7 @@ void AMain::DashStyle()
 
 void AMain::FuryStyle()
 {
-	if (bFuryUnlocked && (StyleIndex != 2) && (!Dead))
+	if (bFuryUnlocked && (StyleIndex != 2) && (!Frozen))
 	{
 		bAttacking = false;
 		if (EquippedWeapon)
@@ -338,7 +339,7 @@ void AMain::FuryStyle()
 
 void AMain::DefenseStyle()
 {
-	if (bDefenceUnlocked && (StyleIndex != 3) && (!Dead))
+	if (bDefenceUnlocked && (StyleIndex != 3) && (!Frozen))
 	{
 		bAttacking = false;
 		if (EquippedWeapon)
@@ -370,7 +371,7 @@ void AMain::DefenseStyle()
 
 void AMain::RangedStyle()
 {
-	if (bRangedUnlocked && (StyleIndex != 4) && (!Dead))
+	if (bRangedUnlocked && (StyleIndex != 4) && (!Frozen))
 	{
 		bAttacking = false;
 		if (EquippedShield)
@@ -395,7 +396,7 @@ void AMain::RangedStyle()
 void AMain::Move1Pressed()
 {
 	bMove1Pressed = true;
-	if (!Dead)
+	if (!Frozen)
 	{
 		switch (StyleIndex)
 		{
@@ -456,7 +457,7 @@ void AMain::Move1Released()
 void AMain::Move2Pressed()
 {
 	bMove2Pressed = true;
-	if (!Dead)
+	if (!Frozen)
 	{
 		switch (StyleIndex)
 		{
@@ -696,15 +697,15 @@ void AMain::TakeDMG(float DamageValue, float KnockBackForce, FVector Direction)
 	LaunchCharacter(Direction * KnockBackForce, true, true); // launches player to make the player feel the force from the hit
 	if (HP <= 0.f)
 	{
-		Die();
+		Freeze();
 	}
 }
 
-void AMain::Die()
+void AMain::Freeze()
 {
 	GetCharacterMovement()->MaxWalkSpeed = 0.f;
 	GetCharacterMovement()->RotationRate = FRotator(0.f);
-	Dead = true;
+	Frozen = true;
 	//UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
 
 	//if (AnimInstance && AlterMontage)
@@ -713,4 +714,11 @@ void AMain::Die()
 	//	AnimInstance->Montage_JumpToSection(FName("Death"), AlterMontage);
 	//}
 	//UGameplayStatics::OpenLevel(this, TEXT("Game_Over"), false);
+}
+
+void AMain::UnFreeze(float SavedMaxWalkSpeed, FRotator SavedRotationRate)
+{
+	GetCharacterMovement()->MaxWalkSpeed = SavedMaxWalkSpeed;
+	GetCharacterMovement()->RotationRate = SavedRotationRate;
+	Frozen = false;
 }
