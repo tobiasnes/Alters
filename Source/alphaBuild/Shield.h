@@ -6,6 +6,7 @@
 #include "Item.h"
 #include "Shield.generated.h"
 
+
 UENUM(BluePrintType)
 enum class EShieldState :uint8
 {

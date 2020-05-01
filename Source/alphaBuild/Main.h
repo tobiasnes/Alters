@@ -88,6 +88,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawning")
 		TSubclassOf<class AShield> ShieldSpawnerClass;
 
+	//Spawn Bow
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawning")
+		TSubclassOf<class ABow> BowSpawnerClass;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -126,6 +130,8 @@ public:
 
 	bool bShieldEquipped;
 
+	bool bBowEquipped;
+
 	bool bDashAttack;
 
 	bool bFuryAttack1;
@@ -151,6 +157,9 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Items")
 	class AShield* EquippedShield;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Items")
+		class ABow* EquippedBow;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Items")
 	class AItem* ActiveOverlappingItem;
 
@@ -159,6 +168,9 @@ public:
 
 	void SetEquippedShield(AShield* ShieldToSet);
 	FORCEINLINE AShield* GetEquippedShield() { return EquippedShield; }
+
+	void SetEquippedBow(ABow* BowToSet);
+	FORCEINLINE ABow* GetEquippedBow() { return EquippedBow; }
 
 	FORCEINLINE void SetActiveOverlappingItem(AItem* Item) { ActiveOverlappingItem = Item; }
 

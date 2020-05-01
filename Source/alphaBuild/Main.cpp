@@ -21,6 +21,7 @@
 #include "Shield.h"
 #include "Lever.h"
 #include "Animation/AnimMontage.h"
+#include "Bow.h"
 
 // Sets default values
 AMain::AMain()
@@ -65,6 +66,8 @@ AMain::AMain()
 	bWeaponEquipped = false;
 
 	bShieldEquipped = false;
+
+	bBowEquipped = false;
 
 	HP = 100;
 	Frozen = false;
@@ -191,6 +194,7 @@ void AMain::EquipPressed()
 		
 		AWeapon* Weapon = Cast<AWeapon>(ActiveOverlappingItem);
 		AShield* Shield = Cast<AShield>(ActiveOverlappingItem);
+		ABow* Bow = Cast<ABow>(ActiveOverlappingItem);
 		ALever* Lever = Cast<ALever>(ActiveOverlappingItem);
 		if (Weapon)
 		{
@@ -198,6 +202,11 @@ void AMain::EquipPressed()
 			{
 			EquippedShield->Destroy();
 			EquippedShield = false;
+			}
+			else if (EquippedBow)
+			{
+				EquippedBow->Destroy();
+				EquippedBow = false;
 			}
 			//EquipMesh();
 			bFuryUnlocked = true;
@@ -215,12 +224,36 @@ void AMain::EquipPressed()
 			EquippedWeapon->Destroy();
 		    EquippedWeapon = false;
 			}
+			else if (EquippedBow)
+			{
+				EquippedBow->Destroy();
+				EquippedBow = false;
+			}
 			bDefenceUnlocked = true;
 			StyleIndex = 3;
 			GetCharacterMovement()->MaxWalkSpeed = MovementSpeedDefence;
 			Shield->Equip(this);
 			SetActiveOverlappingItem(nullptr);
 			bShieldEquipped = true;
+		}
+		else if (Bow)
+		{
+			if (EquippedWeapon)
+			{
+				EquippedWeapon->Destroy();
+				EquippedWeapon = false;
+			}
+			else if (EquippedShield)
+			{
+				EquippedShield->Destroy();
+				EquippedShield = false;
+			}
+			bRangedUnlocked = true;
+			StyleIndex = 4;
+			GetCharacterMovement()->MaxWalkSpeed = MovementSpeedRanged;
+			Bow->Equip(this);
+			SetActiveOverlappingItem(nullptr);
+			bBowEquipped = true;
 		}
 		else if (Lever)
 		{
@@ -247,13 +280,19 @@ void AMain::DashStyle()
 			EquippedWeapon->CombatCollision->SetRelativeScale3D(FVector(0.3f, 0.25f, 0.6f));
 			EquippedWeapon->CombatCollision->SetRelativeLocation(FVector(0.5f, 0.f, 30.f));
 		}
-		if (EquippedShield)
+		else if (EquippedShield)
 		{
 			EquippedShield->DeactivateCollision();
 			EquippedShield->CombatCollision->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 			EquippedShield->Destroy();
 			EquippedShield = false;
 			UE_LOG(LogTemp, Warning, TEXT("DESTROYS SHIELD"))
+		}
+		else if (EquippedBow)
+		{
+			EquippedBow->Destroy();
+			EquippedBow = false;
+			UE_LOG(LogTemp, Warning, TEXT("DESTROYS BOW"))
 		}
 		if (bDashKnifeUnlocked)
 		{
@@ -302,12 +341,18 @@ void AMain::FuryStyle()
 			EquippedWeapon->CombatCollision->SetRelativeScale3D(FVector(0.35f, 0.25f, 1.6f));
 			EquippedWeapon->CombatCollision->SetRelativeLocation(FVector(0.5f, 0.f, 60.f));
 		}
-		if (EquippedShield)
+		else if (EquippedShield)
 		{
 			EquippedShield->DeactivateCollision();
 			EquippedShield->CombatCollision->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 			EquippedShield->Destroy();
 			EquippedShield = false;
+		}
+		else if (EquippedBow)
+		{
+			EquippedBow->Destroy();
+			EquippedBow = false;
+			UE_LOG(LogTemp, Warning, TEXT("DESTROYS BOW"))
 		}
 		if((bWeaponEquipped == true) && (StyleIndex != 1))
 		{
@@ -348,6 +393,12 @@ void AMain::DefenseStyle()
 			EquippedWeapon->Destroy();
 			EquippedWeapon = false;
 		}
+		else if (EquippedBow)
+		{
+			EquippedBow->Destroy();
+			EquippedBow = false;
+			UE_LOG(LogTemp, Warning, TEXT("DESTROYS BOW"))
+		}
 		if ((bShieldEquipped == true) && (StyleIndex != 3))
 		{
 
@@ -381,11 +432,25 @@ void AMain::RangedStyle()
 			EquippedShield->Destroy();
 			EquippedShield = false;
 		}
-		if (EquippedWeapon)
+		else if (EquippedWeapon)
 		{
 			EquippedWeapon->DeactivateCollision();
 			EquippedWeapon->Destroy();
 			EquippedWeapon = false;
+		}
+		if ((bBowEquipped == true) && (StyleIndex != 4))
+		{
+
+			GetWorld()->SpawnActor<ABow>(BowSpawnerClass, FTransform(GetActorLocation()));
+
+			ABow* Bow = Cast<ABow>(ActiveOverlappingItem);
+
+			if (Bow)
+			{
+				Bow->Equip(this);
+				SetActiveOverlappingItem(nullptr);
+			}
+
 		}
 		StyleIndex = 4;
 		GetCharacterMovement()->MaxWalkSpeed = MovementSpeedRanged;
@@ -554,6 +619,17 @@ void AMain::SetEquippedShield(AShield* ShieldToSet)
 	}
 
 	EquippedShield = ShieldToSet;
+}
+
+
+void AMain::SetEquippedBow(ABow* BowToSet)
+{
+	if (EquippedBow)
+	{
+		EquippedBow->Destroy();
+	}
+
+	EquippedBow = BowToSet;
 }
 
 void AMain::Attack()
