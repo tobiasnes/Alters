@@ -39,6 +39,11 @@ void ACat::Tick(float DeltaTime)
 		FRotator InterpRotation = FMath::RInterpTo(GetActorRotation(), LookAtYaw, DeltaTime, 1.f);
 
 		SetActorRotation(InterpRotation);
+
+		LookAtYaw = GetTargetLookAtRotationYaw(Target->GetActorLocation());
+		InterpRotation = FMath::RInterpTo(Target->GetActorRotation(), LookAtYaw, DeltaTime, 1.f);
+
+		Target->SetActorRotation(InterpRotation);
 	}
 
 }
@@ -46,6 +51,13 @@ void ACat::Tick(float DeltaTime)
 FRotator ACat::GetLookAtRotationYaw(FVector TargetLocation)
 {
 	FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), TargetLocation);
+	FRotator YawLookAtRotation = FRotator(0.f, LookAtRotation.Yaw, 0.f);
+	return YawLookAtRotation;
+}
+
+FRotator ACat::GetTargetLookAtRotationYaw(FVector TargetLocation)
+{
+	FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(TargetLocation, GetActorLocation());
 	FRotator YawLookAtRotation = FRotator(0.f, LookAtRotation.Yaw, 0.f);
 	return YawLookAtRotation;
 }

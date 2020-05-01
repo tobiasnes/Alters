@@ -41,6 +41,8 @@ public:
 
 	UFUNCTION()
 	FRotator GetLookAtRotationYaw(FVector TargetLocation);
+	UFUNCTION()
+	FRotator GetTargetLookAtRotationYaw(FVector TargetLocation);
 
 	UFUNCTION()
 	virtual void OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
