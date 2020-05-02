@@ -38,6 +38,8 @@ public:
 	float MovementSpeedRanged;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Movement)
 	float TurnRate{ 540.f };
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Movement)
+	FVector LastSafeDrop; // The last safe location to drop the player if he where to fall off the map
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Movement)
 	int StyleIndex;

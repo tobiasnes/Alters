@@ -94,6 +94,7 @@ void AMain::BeginPlay()
 	GetCharacterMovement()->bOrientRotationToMovement = true; // Character faces in the direction of input...
 	GetCharacterMovement()->RotationRate = FRotator(0.0f, TurnRate, 0.0f); // ...at ths rotation rate
 	GetCharacterMovement()->MaxWalkSpeed = MovementSpeedDash; // Sets Movement Speed
+	LastSafeDrop = GetActorLocation();
 	
 }
 
@@ -104,7 +105,9 @@ void AMain::Tick(float DeltaTime)
 
 	if (GetActorLocation().Z < -400.f)
 	{
-		Freeze();
+		SetActorLocation(LastSafeDrop);
+		TakeDMG(10.f, 0.f, FVector(0.f));
+		GetCharacterMovement()->StopMovementImmediately();
 	}
 
 	if (bInterpToEnemy && CombatTarget)
