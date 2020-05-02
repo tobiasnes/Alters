@@ -182,6 +182,9 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Anims")
 	bool bBlocking;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	bool bIsInDashStyle;
+
 	void Attack();
 	void Attack2();
 	void Attack4();

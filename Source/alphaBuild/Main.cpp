@@ -61,6 +61,7 @@ AMain::AMain()
 	SpeedBeforeDash = FVector(0.f);
 	DashStop = 0.1f;
 	bDashing = false;
+	bIsInDashStyle = false;
 
 	bEquipPressed = false;
 	bWeaponEquipped = false;
@@ -95,6 +96,7 @@ void AMain::BeginPlay()
 	GetCharacterMovement()->RotationRate = FRotator(0.0f, TurnRate, 0.0f); // ...at ths rotation rate
 	GetCharacterMovement()->MaxWalkSpeed = MovementSpeedDash; // Sets Movement Speed
 	LastSafeDrop = GetActorLocation();
+	bIsInDashStyle = true;
 	
 }
 
@@ -194,13 +196,13 @@ void AMain::EquipPressed()
 
 	if (ActiveOverlappingItem)
 	{
-		
 		AWeapon* Weapon = Cast<AWeapon>(ActiveOverlappingItem);
 		AShield* Shield = Cast<AShield>(ActiveOverlappingItem);
 		ABow* Bow = Cast<ABow>(ActiveOverlappingItem);
 		ALever* Lever = Cast<ALever>(ActiveOverlappingItem);
 		if (Weapon)
 		{
+			bIsInDashStyle = false;
 			if (EquippedShield)
 			{
 			EquippedShield->Destroy();
@@ -222,6 +224,7 @@ void AMain::EquipPressed()
 		}
 		else if (Shield)
 		{
+			bIsInDashStyle = false;
 			if (EquippedWeapon)
 			{
 			EquippedWeapon->Destroy();
@@ -241,6 +244,7 @@ void AMain::EquipPressed()
 		}
 		else if (Bow)
 		{
+			bIsInDashStyle = false;
 			if (EquippedWeapon)
 			{
 				EquippedWeapon->Destroy();
@@ -324,7 +328,7 @@ void AMain::DashStyle()
 			}
 
 		}
-
+		bIsInDashStyle = true;
 		StyleIndex = 1;
 		GetCharacterMovement()->MaxWalkSpeed = MovementSpeedDash;
 	}
@@ -378,6 +382,7 @@ void AMain::FuryStyle()
 		}
 
 		}
+		bIsInDashStyle = false;
 		StyleIndex = 2;
 		GetCharacterMovement()->MaxWalkSpeed = MovementSpeedFury;
 	}
@@ -417,6 +422,7 @@ void AMain::DefenseStyle()
 			}
 
 		}
+		bIsInDashStyle = false;
 		StyleIndex = 3;
 		GetCharacterMovement()->MaxWalkSpeed = MovementSpeedDefence;
 	}
@@ -455,6 +461,7 @@ void AMain::RangedStyle()
 			}
 
 		}
+		bIsInDashStyle = false;
 		StyleIndex = 4;
 		GetCharacterMovement()->MaxWalkSpeed = MovementSpeedRanged;
 	}
