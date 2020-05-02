@@ -74,7 +74,7 @@ void AProjectile::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActo
 			FRotator YawToTargetRotation = FRotator(0.f, ToTargetRotation.Yaw, 0.f);
 			// get forward vector
 			FVector Direction = FRotationMatrix(YawToTargetRotation).GetUnitAxis(EAxis::X);
-			Main->TakeDMG(Damage, KnockBack, ForwardVector + FVector(0.f, 0.f, 0.1f));
+			//Main->TakeDMG(Damage, KnockBack, ForwardVector + FVector(0.f, 0.f, 0.1f));
 		}
 	}
 

@@ -487,6 +487,11 @@ void AMain::Move1Pressed()
 			UE_LOG(LogTemp, Warning, TEXT("Defense Move1 Pressed"));
 			break;
 		case 4:
+			if (EquippedBow)
+			{
+				EquippedBow->SpawnArrow();
+			}
+
 			UE_LOG(LogTemp, Warning, TEXT("Ranged Move1 Pressed"));
 			break;
 		default:

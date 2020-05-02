@@ -16,6 +16,7 @@
 #include "Components/SphereComponent.h"
 #include "GameFramework/PlayerController.h"
 #include "Particles/ParticleSystemComponent.h"
+#include "Projectile.h"
 
 
 ABow::ABow()
@@ -87,3 +88,52 @@ void ABow::Equip(AMain* Char)
 
 	}
 }
+
+void ABow::SpawnArrow()
+{
+	if (ArrowSpawnerClass)
+	{
+
+		FTransform ArrowSpawnTransform;
+		FRotator Rotation = GetActorRotation();
+		ArrowSpawnTransform.SetLocation(GetActorLocation() + FVector(-1.f, 1.f, 0.f));
+		ArrowSpawnTransform.SetRotation(GetActorRotation().Quaternion());
+		ArrowSpawnTransform.SetScale3D(FVector(1.f));
+
+		GetWorld()->SpawnActor<AProjectile>(ArrowSpawnerClass, ArrowSpawnTransform);
+	}
+}
+
+
+
+/*void APlayerCharacter::Shoot()
+{
+	if (BulletClass)
+	{
+		FActorSpawnParameters SpawnParameters;
+		SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+		SpawnParameters.bNoFail = true;
+		SpawnParameters.Owner = this;
+		SpawnParameters.Instigator = this;
+
+		FTransform BulletSpawnTransform;
+		BulletSpawnTransform.SetLocation(GetActorForwardVector() + GetActorLocation() + GetActorUpVector() * 40.f);
+		BulletSpawnTransform.SetRotation(GetActorRotation().Quaternion());
+		BulletSpawnTransform.SetScale3D(FVector(1.f));
+
+		if (Time >= ShootDelay)
+		{
+			GetWorld()->SpawnActor<ABullet>(BulletClass, BulletSpawnTransform, SpawnParameters);
+			Time = 0.f;
+
+			if (ShootSound)
+			{
+				UGameplayStatics::PlaySound2D(GetWorld(), ShootSound);
+			}
+
+		}
+
+		UE_LOG(LogTemp, Warning, TEXT("Time is: %f"), Time);
+	}
+
+}*/

@@ -38,8 +38,10 @@ public:
 	float CurrentLifeSpan;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, category = "Projectile")
 	bool bDestroyOnHit;
+
 	UPROPERTY()
 	FVector ForwardVector;
+
 
 protected:
 	// Called when the game starts or when spawned
