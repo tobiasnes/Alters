@@ -86,12 +86,16 @@ void AProjectile::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActo
 			AEnemy* Enemy = Cast<AEnemy>(OtherActor);
 			if (Enemy)
 			{
-				FRotator ToTargetRotation = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), Enemy->GetActorLocation());
-				FRotator YawToTargetRotation = FRotator(0.f, ToTargetRotation.Yaw, 0.f);
-				// get forward vector
-				FVector Direction = FRotationMatrix(YawToTargetRotation).GetUnitAxis(EAxis::X);
-				Enemy->TakeDMG(Damage, KnockBack, ForwardVector + FVector(0.f, 0.f, 0.1f));
-				OverlapUtility();
+				bool Ignore = OtherComp->ComponentHasTag("Ignore");
+				if (!Ignore)
+				{
+					FRotator ToTargetRotation = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), Enemy->GetActorLocation());
+					FRotator YawToTargetRotation = FRotator(0.f, ToTargetRotation.Yaw, 0.f);
+					// get forward vector
+					FVector Direction = FRotationMatrix(YawToTargetRotation).GetUnitAxis(EAxis::X);
+					Enemy->TakeDMG(Damage, KnockBack, ForwardVector + FVector(0.f, 0.f, 0.1f));
+					OverlapUtility();
+				}
 			}
 		}
 	}
