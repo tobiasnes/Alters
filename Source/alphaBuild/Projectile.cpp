@@ -33,6 +33,7 @@ AProjectile::AProjectile()
 	MaxLifeSpan = 5.f;
 	CurrentLifeSpan = 0.f;
 	bDestroyOnHit = false;
+	bHarmsMain = false;
 
 }
 
@@ -67,17 +68,42 @@ void AProjectile::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActo
 
 	if (OtherActor)
 	{
-		AMain* Main = Cast<AMain>(OtherActor);
-		if (Main)
+		if (bHarmsMain)
 		{
-			FRotator ToTargetRotation = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), Main->GetActorLocation());
-			FRotator YawToTargetRotation = FRotator(0.f, ToTargetRotation.Yaw, 0.f);
-			// get forward vector
-			FVector Direction = FRotationMatrix(YawToTargetRotation).GetUnitAxis(EAxis::X);
-			//Main->TakeDMG(Damage, KnockBack, ForwardVector + FVector(0.f, 0.f, 0.1f));
+			AMain* Main = Cast<AMain>(OtherActor);
+			if (Main)
+			{
+				FRotator ToTargetRotation = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), Main->GetActorLocation());
+				FRotator YawToTargetRotation = FRotator(0.f, ToTargetRotation.Yaw, 0.f);
+				// get forward vector
+				FVector Direction = FRotationMatrix(YawToTargetRotation).GetUnitAxis(EAxis::X);
+				Main->TakeDMG(Damage, KnockBack, ForwardVector + FVector(0.f, 0.f, 0.1f));
+				OverlapUtility();
+			}
+		}
+		else
+		{
+			AEnemy* Enemy = Cast<AEnemy>(OtherActor);
+			if (Enemy)
+			{
+				FRotator ToTargetRotation = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), Enemy->GetActorLocation());
+				FRotator YawToTargetRotation = FRotator(0.f, ToTargetRotation.Yaw, 0.f);
+				// get forward vector
+				FVector Direction = FRotationMatrix(YawToTargetRotation).GetUnitAxis(EAxis::X);
+				Enemy->TakeDMG(Damage, KnockBack, ForwardVector + FVector(0.f, 0.f, 0.1f));
+				OverlapUtility();
+			}
 		}
 	}
+}
 
+void AProjectile::OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+	UE_LOG(LogTemp, Warning, TEXT("OnOverlapEnd()"));
+}
+
+void AProjectile::OverlapUtility()
+{
 	if (OverlapParticles)
 	{
 		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), OverlapParticles, GetActorLocation(), FRotator(0.f), true);
@@ -90,9 +116,4 @@ void AProjectile::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActo
 	{
 		Destroy();
 	}
-}
-
-void AProjectile::OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
-{
-	UE_LOG(LogTemp, Warning, TEXT("OnOverlapEnd()"));
 }
