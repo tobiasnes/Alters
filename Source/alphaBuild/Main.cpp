@@ -22,6 +22,7 @@
 #include "Lever.h"
 #include "Animation/AnimMontage.h"
 #include "Bow.h"
+#include "Components/StaticMeshComponent.h"
 
 // Sets default values
 AMain::AMain()
@@ -51,6 +52,10 @@ AMain::AMain()
 	bUseControllerRotationYaw = false;
 	bUseControllerRotationPitch = false;
 	bUseControllerRotationRoll = false;
+
+	//Sets DreamCatcher Mesh
+	DreamCatcherMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("DreamCatcherMesh"));
+	DreamCatcherMesh->SetupAttachment(GetRootComponent());
 
 	StyleIndex = 1;
 	MovementSpeedDash = 600.f;
@@ -86,6 +91,8 @@ AMain::AMain()
 	bInterpToEnemy = false;
 	
 	bBlocking = false;
+
+	bIsAiming = false;
 
 	AlphaEdge = FVector(15650.f, 0.f, 0.f);
 }
@@ -230,6 +237,7 @@ void AMain::EquipPressed()
 			}
 			else if (EquippedBow)
 			{
+				bIsAiming = false;
 				EquippedBow->Destroy();
 				EquippedBow = false;
 				bIsInRangedStyle = false;
@@ -253,6 +261,7 @@ void AMain::EquipPressed()
 			}
 			else if (EquippedBow)
 			{
+				bIsAiming = false;
 				EquippedBow->Destroy();
 				EquippedBow = false;
 				bIsInRangedStyle = false;
@@ -320,6 +329,7 @@ void AMain::DashStyle()
 		}
 		else if (EquippedBow)
 		{
+			bIsAiming = false;
 			EquippedBow->Destroy();
 			EquippedBow = false;
 			UE_LOG(LogTemp, Warning, TEXT("DESTROYS BOW"))
@@ -381,6 +391,7 @@ void AMain::FuryStyle()
 		}
 		else if (EquippedBow)
 		{
+			bIsAiming = false;
 			EquippedBow->Destroy();
 			EquippedBow = false;
 			UE_LOG(LogTemp, Warning, TEXT("DESTROYS BOW"))
@@ -428,6 +439,7 @@ void AMain::DefenseStyle()
 		}
 		else if (EquippedBow)
 		{
+			bIsAiming = false;
 			EquippedBow->Destroy();
 			EquippedBow = false;
 			UE_LOG(LogTemp, Warning, TEXT("DESTROYS BOW"))
@@ -498,6 +510,7 @@ void AMain::RangedStyle()
 void AMain::Move1Pressed()
 {
 	bMove1Pressed = true;
+	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
 	if (!Frozen)
 	{
 		switch (StyleIndex)
@@ -521,7 +534,7 @@ void AMain::Move1Pressed()
 			UE_LOG(LogTemp, Warning, TEXT("Defense Move1 Pressed"));
 			break;
 		case 4:
-			if (EquippedBow)
+			if (EquippedBow && bIsAiming)
 			{
 				EquippedBow->SpawnArrow();
 			}
@@ -564,6 +577,7 @@ void AMain::Move1Released()
 void AMain::Move2Pressed()
 {
 	bMove2Pressed = true;
+	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
 	if (!Frozen)
 	{
 		switch (StyleIndex)
@@ -585,6 +599,13 @@ void AMain::Move2Pressed()
 
 			break;
 		case 4:
+			if (EquippedBow && AnimInstance && AlterMontage)
+			{
+				bIsAiming = true;
+				AnimInstance->Montage_Play(AlterMontage, 1.35f);
+				AnimInstance->Montage_JumpToSection(FName("Bow_Draw"), AlterMontage);
+			}
+
 			UE_LOG(LogTemp, Warning, TEXT("Ranged Move2 Pressed"));
 			break;
 		default:
@@ -596,6 +617,7 @@ void AMain::Move2Pressed()
 void AMain::Move2Released()
 {
 	bMove2Pressed = false;
+	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
 	switch (StyleIndex)
 	{
 	case 1:
@@ -608,6 +630,13 @@ void AMain::Move2Released()
 		UE_LOG(LogTemp, Warning, TEXT("Defense Move2 Released"));
 		break;
 	case 4:
+
+		if (EquippedBow && AnimInstance && AlterMontage)
+		{
+			AnimInstance->Montage_JumpToSection(FName("Bow_Release"), AlterMontage);
+			bIsAiming = false;
+		}
+
 		UE_LOG(LogTemp, Warning, TEXT("Ranged Move2 Released"));
 		break;
 	default:

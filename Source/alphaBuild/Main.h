@@ -27,6 +27,9 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class UCameraComponent* PlayerCamera;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Static Mesh")
+	class UStaticMeshComponent* DreamCatcherMesh;
+
 	// Basic player stats
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Stats)
 	float HP;
@@ -193,6 +196,9 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	bool bIsInRangedStyle;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	bool bIsAiming;
 
 	void Attack();
 	void Attack2();

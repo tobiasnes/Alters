@@ -17,17 +17,24 @@
 #include "GameFramework/PlayerController.h"
 #include "Particles/ParticleSystemComponent.h"
 #include "Projectile.h"
+#include "Engine/Public/TimerManager.h"
 
 
 ABow::ABow()
 {
 	SkeletalMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("SkeletalMesh"));
 	SkeletalMesh->SetupAttachment(GetRootComponent());
+
+	bCanShoot = false;
+
+	SpawnTimer = 1.f;
 }
 
 void ABow::BeginPlay()
 {
 	Super::BeginPlay();
+
+	bCanShoot = true;
 }
 
 void ABow::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
@@ -91,7 +98,7 @@ void ABow::Equip(AMain* Char)
 
 void ABow::SpawnArrow()
 {
-	if (ArrowSpawnerClass)
+	if (ArrowSpawnerClass && bCanShoot)
 	{
 
 		FTransform ArrowSpawnTransform;
@@ -101,9 +108,15 @@ void ABow::SpawnArrow()
 		ArrowSpawnTransform.SetScale3D(FVector(1.f));
 
 		GetWorld()->SpawnActor<AProjectile>(ArrowSpawnerClass, ArrowSpawnTransform);
+		bCanShoot = false;
+		GetWorldTimerManager().SetTimer(ShootHandle, this, &ABow::CanShootAgain, SpawnTimer, false);
 	}
 }
 
+void ABow::CanShootAgain()
+{
+	bCanShoot = true;
+}
 
 
 /*void APlayerCharacter::Shoot()

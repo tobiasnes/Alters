@@ -37,6 +37,8 @@ public:
 	UPROPERTY(EditAnywhere, BluePrintReadWrite, Category = "Item | Particles")
 		bool bBowParticles;
 
+	bool bCanShoot;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "SkeletalMesh")
 		class USkeletalMeshComponent* SkeletalMesh;
 
@@ -49,7 +51,14 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawning")
 		TSubclassOf<class AProjectile> ArrowSpawnerClass;
 
+	UPROPERTY()
+	FTimerHandle ShootHandle;
+
 	void SpawnArrow();
+
+	void CanShootAgain();
+
+	float SpawnTimer;
 
 	UFUNCTION()
 		virtual void OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
