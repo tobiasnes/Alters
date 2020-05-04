@@ -169,7 +169,7 @@ void AShield::BashOnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActo
 			FRotator ToEnemyRotation = UKismetMathLibrary::FindLookAtRotation(EquippedOn->GetActorLocation(), Enemy->GetActorLocation());
 			FRotator YawToEnemyRotation = FRotator(0.f, ToEnemyRotation.Yaw, 0.f);
 			// get forward vector
-			FVector Direction = FRotationMatrix(YawToEnemyRotation).GetUnitAxis(EAxis::Y);
+			FVector Direction = FRotationMatrix(YawToEnemyRotation).GetUnitAxis(EAxis::X);
 			Direction += FVector(0.f, 0.f, 0.1f);
 			Enemy->TakeDMG(0.f, KnockBack, Direction);
 		}
