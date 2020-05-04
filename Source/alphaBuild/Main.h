@@ -30,6 +30,9 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Static Mesh")
 	class UStaticMeshComponent* DreamCatcherMesh;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Decal", meta = (AllowPrivateAccess = "true"))
+	class UDecalComponent* AimArrow;
+
 	// Basic player stats
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Stats)
 	float HP;

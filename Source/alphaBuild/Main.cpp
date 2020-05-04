@@ -23,6 +23,10 @@
 #include "Animation/AnimMontage.h"
 #include "Bow.h"
 #include "Components/StaticMeshComponent.h"
+#include "GameFramework/Pawn.h"
+#include "Components/Decalcomponent.h"
+#include "Materials/Material.h"
+#include "UObject/ConstructorHelpers.h"
 
 // Sets default values
 AMain::AMain()
@@ -56,6 +60,17 @@ AMain::AMain()
 	//Sets DreamCatcher Mesh
 	DreamCatcherMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("DreamCatcherMesh"));
 	DreamCatcherMesh->SetupAttachment(GetRootComponent());
+
+	AimArrow = CreateDefaultSubobject<UDecalComponent>("AimArrow");
+	AimArrow->SetupAttachment(RootComponent);
+
+	static ConstructorHelpers::FObjectFinder<UMaterial> DecalMaterialAsset(TEXT("Material'/Game/Meshes/ArrowDecal/Arrow_Pointer_Mat.Arrow_Pointer_Mat'"));
+	if (DecalMaterialAsset.Succeeded())
+	{
+		AimArrow->SetDecalMaterial(DecalMaterialAsset.Object);
+	}
+	AimArrow->DecalSize = FVector(16.0f, 32.0f, 32.0f);
+	AimArrow->SetRelativeRotation(FRotator(90.0f, 0.0f, 0.0f).Quaternion());
 
 	StyleIndex = 1;
 	MovementSpeedDash = 600.f;
@@ -108,6 +123,7 @@ void AMain::BeginPlay()
 	GetCharacterMovement()->MaxWalkSpeed = MovementSpeedDash; // Sets Movement Speed
 	LastSafeDrop = GetActorLocation();
 	bIsInDashStyle = true;
+	AimArrow->SetHiddenInGame(true);
 	
 }
 
@@ -152,6 +168,35 @@ void AMain::Tick(float DeltaTime)
 		if (CameraBoom->TargetArmLength >= ZoomTarget)
 		{
 			bReverseZoom = false;
+		}
+	}
+
+	if (bIsAiming)
+	{
+		FHitResult Hit;
+		bool HitResult = false;
+		
+
+		HitResult = GetWorld()->GetFirstPlayerController()->GetHitResultUnderCursorByChannel(UEngineTypes::ConvertToTraceType(ECC_WorldStatic), true, Hit);
+
+		if(HitResult)
+		{
+			AimArrow->SetHiddenInGame(false);
+			//GetWorld()->GetFirstPlayerController()->bShowMouseCursor = true;
+			FVector CursorFV = Hit.ImpactNormal;
+			FRotator CursorR = CursorFV.Rotation();
+
+
+			///Set the new direction of the pawn:
+			FVector CursorLocation = Hit.Location;
+			///Set Z to a little above ground
+			FVector TempLocation = FVector(CursorLocation.X, CursorLocation.Y, 30.f);
+
+			///Pure vector math
+			FVector NewDirection = TempLocation - GetActorLocation();
+			NewDirection.Z = 0.f;
+			NewDirection.Normalize();
+			SetActorRotation(NewDirection.Rotation());
 		}
 	}
 }
@@ -241,6 +286,7 @@ void AMain::EquipPressed()
 				EquippedBow->Destroy();
 				EquippedBow = false;
 				bIsInRangedStyle = false;
+				AimArrow->SetHiddenInGame(true);
 			}
 			//EquipMesh();
 			bFuryUnlocked = true;
@@ -265,6 +311,7 @@ void AMain::EquipPressed()
 				EquippedBow->Destroy();
 				EquippedBow = false;
 				bIsInRangedStyle = false;
+				AimArrow->SetHiddenInGame(true);
 			}
 			bDefenceUnlocked = true;
 			StyleIndex = 3;
@@ -332,6 +379,7 @@ void AMain::DashStyle()
 			bIsAiming = false;
 			EquippedBow->Destroy();
 			EquippedBow = false;
+			AimArrow->SetHiddenInGame(true);
 			UE_LOG(LogTemp, Warning, TEXT("DESTROYS BOW"))
 		}
 		if (bDashKnifeUnlocked)
@@ -394,6 +442,7 @@ void AMain::FuryStyle()
 			bIsAiming = false;
 			EquippedBow->Destroy();
 			EquippedBow = false;
+			AimArrow->SetHiddenInGame(true);
 			UE_LOG(LogTemp, Warning, TEXT("DESTROYS BOW"))
 		}
 		if((bWeaponEquipped == true) && (StyleIndex != 1))
@@ -442,6 +491,7 @@ void AMain::DefenseStyle()
 			bIsAiming = false;
 			EquippedBow->Destroy();
 			EquippedBow = false;
+			AimArrow->SetHiddenInGame(true);
 			UE_LOG(LogTemp, Warning, TEXT("DESTROYS BOW"))
 		}
 		if ((bShieldEquipped == true) && (StyleIndex != 3))
@@ -578,6 +628,7 @@ void AMain::Move2Pressed()
 {
 	bMove2Pressed = true;
 	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+	
 	if (!Frozen)
 	{
 		switch (StyleIndex)
@@ -635,6 +686,7 @@ void AMain::Move2Released()
 		{
 			AnimInstance->Montage_JumpToSection(FName("Bow_Release"), AlterMontage);
 			bIsAiming = false;
+			AimArrow->SetHiddenInGame(true);
 		}
 
 		UE_LOG(LogTemp, Warning, TEXT("Ranged Move2 Released"));
