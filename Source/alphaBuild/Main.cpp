@@ -32,9 +32,12 @@ AMain::AMain()
 	// Creates Boom that holds the camera so the player can always be seen
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
 	CameraBoom->SetupAttachment(GetRootComponent());
-	CameraBoom->TargetArmLength = 800.f;// Sets distance between Camera and player
+	CameraBoom->TargetArmLength = 1000.f;// Sets distance between Camera and player
 	CameraBoom->RelativeRotation = FRotator(-80.f, 0.f, 0.f);
 	CameraBoom->bUsePawnControlRotation = false; // Rotation not allowed
+	bZoom = false;
+	bReverseZoom = false;
+	ZoomTarget = 0.f;
 
 	// Set size for collision capsule
 	GetCapsuleComponent()->SetCapsuleSize(45.f, 100.f);
@@ -128,6 +131,22 @@ void AMain::Tick(float DeltaTime)
 		HP = 0;
 	}
 
+	if (bZoom)
+	{
+		CameraBoom->TargetArmLength -= 500.f * DeltaTime;
+		if (CameraBoom->TargetArmLength <= ZoomTarget)
+		{
+			bZoom = false;
+		}
+	}
+	if (bReverseZoom)
+	{
+		CameraBoom->TargetArmLength += 500.f * DeltaTime;
+		if (CameraBoom->TargetArmLength >= ZoomTarget)
+		{
+			bReverseZoom = false;
+		}
+	}
 }
 
 FRotator AMain::GetLookAtRotationYaw(FVector Target)
@@ -820,4 +839,17 @@ void AMain::UnFreeze(float SavedMaxWalkSpeed, FRotator SavedRotationRate)
 	GetCharacterMovement()->MaxWalkSpeed = SavedMaxWalkSpeed;
 	GetCharacterMovement()->RotationRate = SavedRotationRate;
 	Frozen = false;
+}
+
+void AMain::SetCameraDistance(float Distance)
+{
+	ZoomTarget = Distance;
+	if (ZoomTarget > CameraBoom->TargetArmLength)
+	{
+		bReverseZoom = true;
+	}
+	else if (ZoomTarget < CameraBoom->TargetArmLength)
+	{
+		bZoom = true;
+	}
 }

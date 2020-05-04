@@ -17,6 +17,12 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class USpringArmComponent* CameraBoom;
+	UPROPERTY()
+	bool bZoom;
+	UPROPERTY()
+	bool bReverseZoom;
+	UPROPERTY()
+	float ZoomTarget;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class UCameraComponent* PlayerCamera;
@@ -215,5 +221,8 @@ public:
 
 	UFUNCTION()
 	void UnFreeze(float SavedMaxWalkSpeed, FRotator SavedRotationRate);
+
+	UFUNCTION()
+	void SetCameraDistance(float Distance);
 
 };
