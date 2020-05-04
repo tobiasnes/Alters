@@ -185,6 +185,9 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	bool bIsInDashStyle;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	bool bIsInRangedStyle;
+
 	void Attack();
 	void Attack2();
 	void Attack4();

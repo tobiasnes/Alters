@@ -62,6 +62,7 @@ AMain::AMain()
 	DashStop = 0.1f;
 	bDashing = false;
 	bIsInDashStyle = false;
+	bIsInRangedStyle = false;
 
 	bEquipPressed = false;
 	bWeaponEquipped = false;
@@ -212,6 +213,7 @@ void AMain::EquipPressed()
 			{
 				EquippedBow->Destroy();
 				EquippedBow = false;
+				bIsInRangedStyle = false;
 			}
 			//EquipMesh();
 			bFuryUnlocked = true;
@@ -234,6 +236,7 @@ void AMain::EquipPressed()
 			{
 				EquippedBow->Destroy();
 				EquippedBow = false;
+				bIsInRangedStyle = false;
 			}
 			bDefenceUnlocked = true;
 			StyleIndex = 3;
@@ -255,6 +258,7 @@ void AMain::EquipPressed()
 				EquippedShield->Destroy();
 				EquippedShield = false;
 			}
+			bIsInRangedStyle = true;
 			bRangedUnlocked = true;
 			StyleIndex = 4;
 			GetCharacterMovement()->MaxWalkSpeed = MovementSpeedRanged;
@@ -329,6 +333,7 @@ void AMain::DashStyle()
 
 		}
 		bIsInDashStyle = true;
+		bIsInRangedStyle = false;
 		StyleIndex = 1;
 		GetCharacterMovement()->MaxWalkSpeed = MovementSpeedDash;
 	}
@@ -383,6 +388,7 @@ void AMain::FuryStyle()
 
 		}
 		bIsInDashStyle = false;
+		bIsInRangedStyle = false;
 		StyleIndex = 2;
 		GetCharacterMovement()->MaxWalkSpeed = MovementSpeedFury;
 	}
@@ -423,6 +429,7 @@ void AMain::DefenseStyle()
 
 		}
 		bIsInDashStyle = false;
+		bIsInRangedStyle = false;
 		StyleIndex = 3;
 		GetCharacterMovement()->MaxWalkSpeed = MovementSpeedDefence;
 	}
@@ -462,6 +469,7 @@ void AMain::RangedStyle()
 
 		}
 		bIsInDashStyle = false;
+		bIsInRangedStyle = true;
 		StyleIndex = 4;
 		GetCharacterMovement()->MaxWalkSpeed = MovementSpeedRanged;
 	}
