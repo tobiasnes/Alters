@@ -25,6 +25,9 @@ public:
 	float MovementSpeed;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Movement)
+	float Health;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Movement)
 	bool bIsFalling;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Movement)

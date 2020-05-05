@@ -39,5 +39,9 @@ void UMainAnimInstance::UpdateAnimationProperties()
 		{
 			Main = Cast<AMain>(Pawn);
 		}
+		if (Main)
+		{
+			Health = Main->HP;
+		}
 	}
 }
