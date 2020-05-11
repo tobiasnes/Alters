@@ -135,6 +135,8 @@ void AWeapon::CombatOnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AAc
 				Enemy->TakeDMG(DashDamage, KnockBack, Direction);
 				UE_LOG(LogTemp, Warning, TEXT("You did %f damage"), DashDamage);
 			}
+
+			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), CombatParticles, GetActorLocation(), GetActorRotation(), true);
 		}
 	}
 }
