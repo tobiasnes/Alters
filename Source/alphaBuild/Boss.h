@@ -12,7 +12,7 @@ enum class EBossMovementStatus :uint8
 	EMS_Idle			UMETA(DisplayName = "Idle"),
 	EMS_Teleport		UMETA(DisplayName = "Teleport"),
 	EMS_Charge			UMETA(DisplayName = "Charge"),
-	EMS_MidRange		UMETA(DisplayName = "MidRange"),
+	EMS_FireBreath		UMETA(DisplayName = "FireBreath"),
 	EMS_Melee			UMETA(DisplayName = "Melee"),
 
 	EMS_MAX				UMETA(DisplayName = "DefaultMAX")
@@ -79,6 +79,21 @@ public:
 	bool bInterpToMain;
 	FRotator GetLookAtRotationYaw(FVector Target);
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawning")
+	TSubclassOf<class AProjectile> FireSpawnerClass;
+
+	// Firebreath values
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "FireBreath")
+	float FireDelay;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AI")
+	float TimeSinceLastShot;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "FireBreath")
+	float FireBreathDuration;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AI")
+	bool bIsBreathingFire;
+	FTimerHandle FireBreathHandle;
+
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -110,6 +125,12 @@ public:
 	void StartResting();
 	UFUNCTION()
 	void StopResting();
+
+	// Fire Breath
+	UFUNCTION()
+	void StartFireBreath();
+	UFUNCTION()
+	void StopFireBreath();
 
 	UFUNCTION(BlueprintCallable)
 	void HitPlayer(float DMG);

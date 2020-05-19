@@ -38,6 +38,11 @@ ABoss::ABoss()
 	bIsCharging = false;
 	bIsExhausted = false;
 
+	FireDelay = 0.1f;
+	TimeSinceLastShot = 0.1f;
+	FireBreathDuration = 3.f;
+	bIsBreathingFire = false;
+
 }
 
 void ABoss::BeginPlay()
@@ -83,6 +88,16 @@ void ABoss::Tick(float DeltaTime)
 
 		SetActorLocation(GetActorLocation() + Movement);
 	}
+
+	if (bIsBreathingFire)
+	{
+		if (TimeSinceLastShot >= FireDelay)
+		{
+
+			TimeSinceLastShot = 0.f;
+		}
+		TimeSinceLastShot += DeltaTime;
+	}
 }
 
 void ABoss::StartResting()
@@ -123,7 +138,7 @@ void ABoss::AggroSphereOnOverlapBegin(UPrimitiveComponent* OverlappedComponent, 
 			}
 			else if (!bIsCharging && !bIsExhausted)
 			{
-				SetBossMovementStatus(EBossMovementStatus::EMS_MidRange);
+				//not sure if I'll need this "else if"
 			}
 			bOverlappingAggroSphere = true;
 		}
@@ -181,6 +196,18 @@ void ABoss::CombatSphereOnOverlapEnd(UPrimitiveComponent* OverlappedComponent, A
 			}
 		}
 	}
+}
+
+void ABoss::StartFireBreath()
+{
+	bIsBreathingFire = true;
+	SetBossMovementStatus(EBossMovementStatus::EMS_FireBreath);
+	GetWorldTimerManager().SetTimer(ChargeHandle, this, &ABoss::StopFireBreath, ExhaustedTime);
+}
+
+void ABoss::StopFireBreath()
+{
+	bIsBreathingFire = false;
 }
 
 void ABoss::ChargeBoxOnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
