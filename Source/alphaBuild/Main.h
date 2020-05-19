@@ -15,14 +15,14 @@ public:
 	// Sets default values for this character's properties
 	AMain();
 
-	/* UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TSubclassOf<class UUserWidget> DialogueBlueprint;
 
 	UPROPERTY(EditAnywhere)
 	TArray<FName> FirstEncounter;
 
 	UPROPERTY(BlueprintReadWrite)
-	UUserWidget* DialogueInstance; */
+	UUserWidget* DialogueInstance1; 
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class USpringArmComponent* CameraBoom;

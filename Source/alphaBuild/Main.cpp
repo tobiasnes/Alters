@@ -134,10 +134,10 @@ void AMain::BeginPlay()
 	bIsInDashStyle = true;
 	AimArrow->SetHiddenInGame(true);
 	
-	//if (DialogueBlueprint && !DialogueInstance1)
-	//{
-		//DialogueInstance1 = CreateWidget<UUserWidget>(GetWorld(), DialogueBlueprint);
-	//}
+	if (DialogueBlueprint && !DialogueInstance1)
+	{
+		DialogueInstance1 = CreateWidget<UUserWidget>(GetWorld(), DialogueBlueprint);
+	}
 		
 }
 

@@ -78,7 +78,7 @@ void ACat::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* Othe
 			if (Main->CatEncounter1Over == false)
 			{
 				Main->CatEncounter1Start = true;
-				//Main->DialogueInstance1->AddToViewport();
+				Main->DialogueInstance1->AddToViewport();
 			}
 			else 
 			{
