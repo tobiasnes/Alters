@@ -31,8 +31,8 @@ void ABoss::BeginPlay()
 
 	SetBossMovementStatus(EBossMovementStatus::EMS_Idle);
 
-	//AggroSphere->OnComponentBeginOverlap.AddDynamic(this, &ABoss::AggroSphereOnOverlapBegin);
-	//AggroSphere->OnComponentEndOverlap.AddDynamic(this, &ABoss::AggroSphereOnOverlapEnd);
+	AggroSphere->OnComponentBeginOverlap.AddDynamic(this, &ABoss::AggroSphereOnOverlapBegin);
+	AggroSphere->OnComponentEndOverlap.AddDynamic(this, &ABoss::AggroSphereOnOverlapEnd);
 
 }
 
@@ -89,5 +89,6 @@ void ABoss::TeleportBehindCombatTarget()
 	// get forward vector
 	FVector Direction = FRotationMatrix(YawToCombatTargetRotation).GetUnitAxis(EAxis::X);
 
-	SetActorLocation(CombatTargetLocation + (Direction * 100.f));
+	SetActorLocation(CombatTargetLocation + (Direction * 500.f));
+	SetActorRotation(YawToCombatTargetRotation + FRotator(0.f, 180.f, 0.f));
 }
