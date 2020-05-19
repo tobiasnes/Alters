@@ -19,9 +19,21 @@ ABoss::ABoss()
 	AggroSphere->SetupAttachment(GetRootComponent());
 	AggroSphere->InitSphereRadius(1000.f);
 
+	CombatSphere = CreateAbstractDefaultSubobject<USphereComponent>(TEXT("CombatSphere"));
+	CombatSphere->SetupAttachment(GetRootComponent());
+	CombatSphere->InitSphereRadius(200.f);
+
 	CombatTarget = nullptr;
 
-	bOverlappingAggrosphere = false;
+	bOverlappingAggroSphere = false;
+	bOverlappingCombatSphere = false;
+
+	ChargeSpeed = 1000.f;
+	ChargeTime = 1.f;
+	ChargeDamage = 35.f;
+	ExhaustedTime = 2.5f;
+	bIsCharging = false;
+	bIsExhausted = false;
 
 }
 
@@ -33,6 +45,9 @@ void ABoss::BeginPlay()
 
 	AggroSphere->OnComponentBeginOverlap.AddDynamic(this, &ABoss::AggroSphereOnOverlapBegin);
 	AggroSphere->OnComponentEndOverlap.AddDynamic(this, &ABoss::AggroSphereOnOverlapEnd);
+
+	CombatSphere->OnComponentBeginOverlap.AddDynamic(this, &ABoss::CombatSphereOnOverlapBegin);
+	CombatSphere->OnComponentEndOverlap.AddDynamic(this, &ABoss::CombatSphereOnOverlapEnd);
 
 }
 
@@ -59,7 +74,7 @@ void ABoss::AggroSphereOnOverlapBegin(UPrimitiveComponent* OverlappedComponent, 
 			{
 				SetBossMovementStatus(EBossMovementStatus::EMS_MidRange);
 			}
-			bOverlappingAggrosphere = true;
+			bOverlappingAggroSphere = true;
 		}
 	}
 }
@@ -71,10 +86,37 @@ void ABoss::AggroSphereOnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AA
 		AMain* Main = Cast<AMain>(OtherActor);
 		if (Main)
 		{
-			bOverlappingAggrosphere = false;
+			bOverlappingAggroSphere = false;
 			TeleportBehindCombatTarget();
 			SetBossMovementStatus(EBossMovementStatus::EMS_Teleport);
+		}
+	}
+}
 
+void ABoss::CombatSphereOnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if (OtherActor)
+	{
+		AMain* Main = Cast<AMain>(OtherActor);
+		{
+			if (Main)
+			{
+				bOverlappingCombatSphere = true;
+			}
+		}
+	}
+}
+
+void ABoss::CombatSphereOnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+	if (OtherActor)
+	{
+		AMain* Main = Cast<AMain>(OtherActor);
+		{
+			if (Main)
+			{
+				bOverlappingCombatSphere = false;
+			}
 		}
 	}
 }
@@ -91,4 +133,37 @@ void ABoss::TeleportBehindCombatTarget()
 
 	SetActorLocation(CombatTargetLocation + (Direction * 500.f));
 	SetActorRotation(YawToCombatTargetRotation + FRotator(0.f, 180.f, 0.f));
+}
+
+void ABoss::HitPlayer(float DMG)
+{
+	if (bOverlappingCombatSphere)
+	{
+		// cast TakeDMG function on player
+		if (CombatTarget)
+		{
+			USceneComponent* SceneComp = Cast<USceneComponent>(GetComponentByClass(USceneComponent::StaticClass()));
+			const FRotator Rotation = SceneComp->GetComponentRotation();
+			const FRotator YawRotation(0, Rotation.Yaw, 0);
+			// get forward vector
+			FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
+			Direction.Z = 0.8f;
+
+			float x = Direction.X;
+			float y = Direction.Y;
+			float z = Direction.Z;
+
+			if (bBlocked && !bIsCharging)
+			{
+				DMG = 0.f;
+				KnockBack = 0.f;
+				Direction = FVector(0.f);
+			}
+
+			UE_LOG(LogTemp, Warning, TEXT("x: %f y: %f z: %f"), x, y, z);
+			Cast<AMain>(CombatTarget)->TakeDMG(DMG, KnockBack, Direction);
+		}
+		UE_LOG(LogTemp, Warning, TEXT("Player Got Hit!"));
+	}
+	UE_LOG(LogTemp, Warning, TEXT("HitPlayer()"));
 }

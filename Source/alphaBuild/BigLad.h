@@ -87,7 +87,7 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AI")
 	bool bIsCharging;
 
-	// tells the AI if it is charging the enemy
+	// tells the AI if it is exhausetd
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AI")
 	bool bIsExhausted;
 

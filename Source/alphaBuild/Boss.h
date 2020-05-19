@@ -39,11 +39,38 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AI")
 	class USphereComponent* AggroSphere;
 
+	// Sphere that will make ai attack  if the player overlaps
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AI")
+	USphereComponent* CombatSphere;
+
+	// The target the boss will attack
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AI")
 	class AMain* CombatTarget;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AI")
-	bool bOverlappingAggrosphere;
+	bool bOverlappingAggroSphere;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AI")
+	bool bOverlappingCombatSphere;
+
+	// Will be used as hitbox for the charge attack
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Attack")
+	class UBoxComponent* ChargeBox;
+
+	// Values for the move where the AI charges the player
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Charge")
+	float ChargeSpeed;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Charge")
+	float ChargeTime;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Charge")
+	float ChargeDamage;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Charge")
+	float ExhaustedTime;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AI")
+	bool bIsCharging;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AI")
+	bool bIsExhausted;
+	FTimerHandle ChargeHandle;
 
 protected:
 	// Called when the game starts or when spawned
@@ -58,6 +85,15 @@ public:
 	UFUNCTION()
 	virtual void AggroSphereOnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
+	UFUNCTION()
+	virtual void CombatSphereOnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	UFUNCTION()
+	virtual void CombatSphereOnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+
+	UFUNCTION(BlueprintCallable)
 	void TeleportBehindCombatTarget();
+
+	UFUNCTION(BlueprintCallable)
+	void HitPlayer(float DMG);
 
 };
