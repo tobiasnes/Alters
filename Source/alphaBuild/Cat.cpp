@@ -5,6 +5,8 @@
 #include "Main.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Components/SkeletalMeshComponent.h"
+#include "Runtime/UMG/Public/UMG.h"
 
 
 ACat::ACat()
@@ -15,6 +17,7 @@ ACat::ACat()
 	SkeletalMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("SkeletalMesh"));
 	SkeletalMesh->SetupAttachment(GetRootComponent());
 
+	CatEncounterEnd = false;
 }
 
 void ACat::BeginPlay()
@@ -28,8 +31,9 @@ void ACat::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	Time += DeltaTime;
-	if (Time >= 10)
+	if (CatEncounterEnd == true)
 	{
+		//MainCharacter->CatEncounterEnd = false;
 		Destroy();
 	}
 	
@@ -71,6 +75,15 @@ void ACat::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* Othe
 		AMain* Main = Cast<AMain>(OtherActor);
 		if (Main)
 		{
+			if (Main->CatEncounter1Over == false)
+			{
+				Main->CatEncounter1Start = true;
+				//Main->DialogueInstance1->AddToViewport();
+			}
+			else 
+			{
+				Main->CatEncounter2Start = true;
+			}
 			Target = Main;
 			SavedMaxWalkSpeed = Main->GetCharacterMovement()->MaxWalkSpeed;
 			SavedRotationRate = Main->GetCharacterMovement()->RotationRate;

@@ -27,6 +27,8 @@
 #include "Components/Decalcomponent.h"
 #include "Materials/Material.h"
 #include "UObject/ConstructorHelpers.h"
+#include "Runtime/UMG/Public/UMG.h"
+#include "Blueprint/UserWidget.h"
 
 // Sets default values
 AMain::AMain()
@@ -110,6 +112,13 @@ AMain::AMain()
 	bIsAiming = false;
 
 	AlphaEdge = FVector(15650.f, 0.f, 0.f);
+
+	CatEncounter1Start = false;
+	CatEncounter2Start = false;
+
+	CatEncounter1Over = false;
+	CatEncounter2Over = false;
+
 }
 
 // Called when the game starts or when spawned
@@ -125,6 +134,11 @@ void AMain::BeginPlay()
 	bIsInDashStyle = true;
 	AimArrow->SetHiddenInGame(true);
 	
+	//if (DialogueBlueprint && !DialogueInstance1)
+	//{
+		//DialogueInstance1 = CreateWidget<UUserWidget>(GetWorld(), DialogueBlueprint);
+	//}
+		
 }
 
 // Called every frame

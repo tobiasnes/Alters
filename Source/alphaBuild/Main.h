@@ -15,6 +15,15 @@ public:
 	// Sets default values for this character's properties
 	AMain();
 
+	/* UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TSubclassOf<class UUserWidget> DialogueBlueprint;
+
+	UPROPERTY(EditAnywhere)
+	TArray<FName> FirstEncounter;
+
+	UPROPERTY(BlueprintReadWrite)
+	UUserWidget* DialogueInstance; */
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class USpringArmComponent* CameraBoom;
 	UPROPERTY()
@@ -153,6 +162,21 @@ public:
 
 	void EquipPressed();
 	void EquipReleased();
+
+
+	UPROPERTY(BlueprintReadWrite)
+	bool CatEncounter1Start;
+
+	UPROPERTY(BlueprintReadWrite)
+	bool CatEncounter1Over;
+
+	UPROPERTY(BlueprintReadWrite)
+	bool CatEncounter2Start;
+
+	UPROPERTY(BlueprintReadWrite)
+	bool CatEncounter2Over;
+
+	public:
 
 	//UFUNCTION(BlueprintCallable)
 	//void EquipMesh();

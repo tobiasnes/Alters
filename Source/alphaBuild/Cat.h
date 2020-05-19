@@ -30,6 +30,12 @@ public:
 	class AMain* Target;
 
 	float Time;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	class AMain* MainCharacter;
+
+	UPROPERTY(BlueprintReadWrite)
+	bool CatEncounterEnd;
 	
 protected:
 	// Called when the game starts or when spawned
