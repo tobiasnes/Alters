@@ -11,6 +11,7 @@ enum class EBossMovementStatus :uint8
 {
 	EMS_Idle			UMETA(DisplayName = "Idle"),
 	EMS_Teleport		UMETA(DisplayName = "Teleport"),
+	EMS_Charge			UMETA(DisplayName = "Charge"),
 	EMS_MidRange		UMETA(DisplayName = "MidRange"),
 	EMS_Melee			UMETA(DisplayName = "Melee"),
 
@@ -43,6 +44,7 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AI")
 	USphereComponent* CombatSphere;
 
+
 	// The target the boss will attack
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AI")
 	class AMain* CombatTarget;
@@ -72,6 +74,11 @@ public:
 	bool bIsExhausted;
 	FTimerHandle ChargeHandle;
 
+	// Everything interping
+	float InterpSpeed;
+	bool bInterpToMain;
+	FRotator GetLookAtRotationYaw(FVector Target);
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -90,8 +97,19 @@ public:
 	UFUNCTION()
 	virtual void CombatSphereOnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
+	UFUNCTION()
+	virtual void ChargeBoxOnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	UFUNCTION()
+	virtual void ChargeBoxOnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+
 	UFUNCTION(BlueprintCallable)
 	void TeleportBehindCombatTarget();
+
+	// After Charge
+	UFUNCTION()
+	void StartResting();
+	UFUNCTION()
+	void StopResting();
 
 	UFUNCTION(BlueprintCallable)
 	void HitPlayer(float DMG);

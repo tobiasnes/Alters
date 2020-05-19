@@ -95,7 +95,6 @@ void ABigLad::Tick(float DeltaTime)
 		FVector Movement = GetActorForwardVector() * DeltaTime * ChargeSpeed;
 
 		SetActorLocation(GetActorLocation() + Movement);
-
 	}
 }
 

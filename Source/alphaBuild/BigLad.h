@@ -91,8 +91,10 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AI")
 	bool bIsExhausted;
 
+	// After Charge
+	UFUNCTION()
 	void StartResting();
-
+	UFUNCTION()
 	void StopResting();
 
 	UFUNCTION()
