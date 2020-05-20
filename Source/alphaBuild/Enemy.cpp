@@ -3,6 +3,8 @@
 
 #include "Enemy.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Particles/ParticleSystemComponent.h"
+#include "Kismet/GameplayStatics.h"
 #include "TimerManager.h"
 
 // Sets default values
@@ -61,7 +63,7 @@ void AEnemy::TakeDMG(float DamageValue, float KnockBackForce, FVector Direction)
 	}
 	if (HP <= 0.f)
 	{
-		Destroy(); // Destroy the enemy if it looses all HP
+		//Destroy(); // Destroy the enemy if it looses all HP
 	}
 }
 
@@ -70,4 +72,13 @@ void AEnemy::EnableTakeDMG()
 	bCanTakeDamage = true;
 	GetCharacterMovement()->BrakingFrictionFactor = 2.f; // Sets friction back to default
 	GetWorldTimerManager().ClearTimer(DMGHandle);
+}
+
+void AEnemy::Die()
+{
+	if (DeathParticlesComponent)
+	{
+		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), DeathParticlesComponent, GetActorLocation(), FRotator(0.f), true);
+	}
+	Destroy();
 }

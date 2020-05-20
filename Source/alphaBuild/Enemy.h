@@ -15,6 +15,9 @@ public:
 	// Sets default values for this character's properties
 	AEnemy();
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Particles")
+	class UParticleSystem* DeathParticlesComponent;
+
 	// Movement values
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Movement")
 	float MovementSpeed;
@@ -24,9 +27,9 @@ public:
 	// Stats
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Stats")
 	float HP;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Stats)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Stats")
 	float KnockBack;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Stats)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Stats")
 	float Damage;
 
 	UPROPERTY(VisibleAnywhere)
@@ -49,5 +52,8 @@ public:
 	void TakeDMG(float DamageValue, float KnockBackForce, FVector Direction);
 
 	void EnableTakeDMG();
+
+	UFUNCTION(BlueprintCallable)
+	void Die();
 
 };

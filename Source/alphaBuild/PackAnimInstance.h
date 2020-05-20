@@ -30,4 +30,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Movement)
 	class APack* Pack;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Status)
+	float HP;
+
 };

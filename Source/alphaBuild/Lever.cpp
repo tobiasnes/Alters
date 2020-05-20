@@ -120,7 +120,10 @@ void ALever::PullLever()
 {
 	if (bLeverActive)
 	{
-		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ArrowOverlapParticles, GetActorLocation(), FRotator(0.f), true);
+		if (ArrowOverlapParticles)
+		{
+			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ArrowOverlapParticles, GetActorLocation(), FRotator(0.f), true);
+		}
 		bLeverActive = false;
 		bLeverMoves = true;
 		bInterping = true;
