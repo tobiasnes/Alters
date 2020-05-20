@@ -103,8 +103,9 @@ void ABow::SpawnArrow()
 
 		FTransform ArrowSpawnTransform;
 		FRotator Rotation = GetActorRotation();
+		FRotator YawRotation = FRotator(0.f, Rotation.Yaw, 0.f);
 		ArrowSpawnTransform.SetLocation(GetActorLocation() + FVector(-1.f, 1.f, 0.f));
-		ArrowSpawnTransform.SetRotation(GetActorRotation().Quaternion());
+		ArrowSpawnTransform.SetRotation(YawRotation.Quaternion());
 		ArrowSpawnTransform.SetScale3D(FVector(1.f));
 
 		GetWorld()->SpawnActor<AProjectile>(ArrowSpawnerClass, ArrowSpawnTransform);
