@@ -3,8 +3,11 @@
 
 #include "Lever.h"
 #include "Main.h"
+#include "Projectile.h"
+#include "Particles/ParticleSystemComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "Components/SphereComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 ALever::ALever()
@@ -88,6 +91,14 @@ void ALever::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* Ot
 		{
 			Main->SetActiveOverlappingItem(this);
 		}
+		AProjectile* Arrow = Cast<AProjectile>(OtherActor);
+		if (Arrow)
+		{
+			if (!Arrow->bHarmsMain)
+			{
+				PullLever();
+			}
+		}
 	}
 }
 
@@ -109,6 +120,7 @@ void ALever::PullLever()
 {
 	if (bLeverActive)
 	{
+		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ArrowOverlapParticles, GetActorLocation(), FRotator(0.f), true);
 		bLeverActive = false;
 		bLeverMoves = true;
 		bInterping = true;

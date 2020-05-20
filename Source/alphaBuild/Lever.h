@@ -26,6 +26,9 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Platform")
 	class UStaticMeshComponent* PlatformMesh;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item | Particles")
+	class UParticleSystem* ArrowOverlapParticles;
+
 	UPROPERTY(EditAnywhere, meta = (MakeEditWidget = "true"))
 	FVector StartPoint;
 
