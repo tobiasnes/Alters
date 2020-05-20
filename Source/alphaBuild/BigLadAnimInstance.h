@@ -29,5 +29,8 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Movement)
 	class ABigLad* BigLad;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Status)
+	float HP;
 	
 };

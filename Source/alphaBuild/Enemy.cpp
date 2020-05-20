@@ -63,6 +63,7 @@ void AEnemy::TakeDMG(float DamageValue, float KnockBackForce, FVector Direction)
 	}
 	if (HP <= 0.f)
 	{
+		GetCharacterMovement()->StopMovementImmediately();
 		//Destroy(); // Destroy the enemy if it looses all HP
 	}
 }
