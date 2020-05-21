@@ -44,7 +44,6 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AI")
 	USphereComponent* CombatSphere;
 
-
 	// The target the boss will attack
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AI")
 	class AMain* CombatTarget;

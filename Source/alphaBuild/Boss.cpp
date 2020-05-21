@@ -3,11 +3,17 @@
 
 #include "Boss.h"
 #include "Main.h"
+#include "Projectile.h"
 #include "Components/SphereComponent.h"
 #include "Components/BoxComponent.h"
+#include "Components/SkeletalMeshComponent.h"
+#include "GameFramework/Character.h"
+#include "Engine/SkeletalMeshSocket.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "TimerManager.h"
+#include "Engine/SkeletalMeshSocket.h"
+#include "Engine/World.h"
 
 
 ABoss::ABoss()
@@ -93,7 +99,16 @@ void ABoss::Tick(float DeltaTime)
 	{
 		if (TimeSinceLastShot >= FireDelay)
 		{
-
+			if (FireSpawnerClass)
+			{
+				FVector Location = GetMesh()->GetSocketLocation("Head_Socket");
+				FTransform FireSpawnTransform;
+				FireSpawnTransform.SetLocation(Location);
+				FRotator Rotation = GetMesh()->GetSocketRotation("Head_Socekt");
+				FRotator YawRotation = FRotator(0.f, Rotation.Yaw, 0.f);
+				FireSpawnTransform.SetRotation(YawRotation.Quaternion());
+				GetWorld()->SpawnActor<AProjectile>(FireSpawnerClass, FireSpawnTransform);
+			}
 			TimeSinceLastShot = 0.f;
 		}
 		TimeSinceLastShot += DeltaTime;
