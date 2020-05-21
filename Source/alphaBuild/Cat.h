@@ -33,10 +33,25 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	class AMain* MainCharacter;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TSubclassOf<class UUserWidget> DialogueBlueprint;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<FName> DialogueCache;
 
 	UPROPERTY(BlueprintReadWrite)
-	bool CatEncounterEnd;
-	
+	UUserWidget* DialogueInstance1;
+
+	bool bIsTalking;
+
+	int32 CurrentDialogue = 0;
+
+	void NextDialogue();
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void UpdateDialogue(FName Dialogue);
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

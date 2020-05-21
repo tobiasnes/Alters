@@ -7,6 +7,7 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Runtime/UMG/Public/UMG.h"
+#include "Blueprint/UserWidget.h"
 
 
 ACat::ACat()
@@ -17,13 +18,19 @@ ACat::ACat()
 	SkeletalMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("SkeletalMesh"));
 	SkeletalMesh->SetupAttachment(GetRootComponent());
 
-	CatEncounterEnd = false;
+	bIsTalking = false;
 }
 
 void ACat::BeginPlay()
 {
 	Super::BeginPlay();
 
+	if (DialogueBlueprint && !DialogueInstance1)
+	{
+		DialogueInstance1 = CreateWidget<UUserWidget>(GetWorld(), DialogueBlueprint);
+	}
+
+	GetWorld()->GetFirstPlayerController()->InputComponent->BindAction("DialogueStuff", IE_Pressed, this, &ACat::NextDialogue);
 }
 
 void ACat::Tick(float DeltaTime)
@@ -31,11 +38,6 @@ void ACat::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	Time += DeltaTime;
-	if (CatEncounterEnd == true)
-	{
-		//MainCharacter->CatEncounterEnd = false;
-		Destroy();
-	}
 	
 	if (Target)
 	{
@@ -75,15 +77,10 @@ void ACat::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* Othe
 		AMain* Main = Cast<AMain>(OtherActor);
 		if (Main)
 		{
-			if (Main->CatEncounter1Over == false)
-			{
-				Main->CatEncounter1Start = true;
-				Main->DialogueInstance1->AddToViewport();
-			}
-			else 
-			{
-				Main->CatEncounter2Start = true;
-			}
+
+			bIsTalking = true;
+			DialogueInstance1->AddToViewport();
+			NextDialogue();
 			Target = Main;
 			SavedMaxWalkSpeed = Main->GetCharacterMovement()->MaxWalkSpeed;
 			SavedRotationRate = Main->GetCharacterMovement()->RotationRate;
@@ -105,5 +102,26 @@ void ACat::OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherA
 			Main->UnFreeze(SavedMaxWalkSpeed, SavedRotationRate);
 			Main->SetCameraDistance(1000.f);
 		}
+	}
+}
+
+
+void ACat::NextDialogue()
+{
+	if (bIsTalking)
+	{
+		if (DialogueCache.IsValidIndex(CurrentDialogue))
+		{
+			UpdateDialogue(DialogueCache[CurrentDialogue]);
+			CurrentDialogue++;
+		}
+		else
+		{
+			CurrentDialogue = 0;
+			bIsTalking = false;
+			DialogueInstance1->RemoveFromViewport();
+			Destroy();
+		}
+
 	}
 }
