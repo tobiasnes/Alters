@@ -7,6 +7,7 @@
 #include "Main.h"
 #include "Enemy.h"
 #include "Pack.h"
+#include "Projectile.h"
 #include "Engine/SkeletalMeshSocket.h"
 #include "Engine/World.h"
 #include "Sound/SoundCue.h"
@@ -106,8 +107,6 @@ void AShield::Equip(AMain* Char)
 		{
 			IdleParticlesComponent->Deactivate();
 		}
-
-
 	}
 }
 
@@ -125,6 +124,11 @@ void AShield::ShieldCombatOnOverlapBegin(UPrimitiveComponent* OverlappedComponen
 			{
 				UE_LOG(LogTemp, Warning, TEXT("Overlap Shield Begin"));
 			}
+		}
+		AProjectile* Projectile = Cast<AProjectile>(OtherActor);
+		if (Projectile)
+		{
+			Projectile->OverlapUtility();
 		}
 	}
 }

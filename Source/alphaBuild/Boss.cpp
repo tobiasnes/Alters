@@ -37,7 +37,7 @@ ABoss::ABoss()
 	bOverlappingAggroSphere = false;
 	bOverlappingCombatSphere = false;
 
-	ChargeSpeed = 1000.f;
+	ChargeSpeed = 1200.f;
 	ChargeTime = 1.f;
 	ChargeDamage = 35.f;
 	ExhaustedTime = 2.5f;
@@ -133,6 +133,7 @@ void ABoss::StartResting()
 {
 	bIsCharging = false;
 	bIsExhausted = true;
+	SetBossMovementStatus(EBossMovementStatus::EMS_Idle);
 	GetWorldTimerManager().SetTimer(ChargeHandle, this, &ABoss::StopResting, ExhaustedTime);
 }
 
