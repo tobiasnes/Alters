@@ -12,6 +12,7 @@ enum class EBossMovementStatus :uint8
 	EMS_Idle			UMETA(DisplayName = "Idle"),
 	EMS_Teleport		UMETA(DisplayName = "Teleport"),
 	EMS_Charge			UMETA(DisplayName = "Charge"),
+	EMS_Walk			UMETA(DisplayName = "Walk"),
 	EMS_FireBreath		UMETA(DisplayName = "FireBreath"),
 	EMS_Melee			UMETA(DisplayName = "Melee"),
 
@@ -34,7 +35,8 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Movement")
 	EBossMovementStatus BossMovementStatus;
 
-	FORCEINLINE void SetBossMovementStatus(EBossMovementStatus Status) { BossMovementStatus = Status; }
+	UFUNCTION(BlueprintCallable)
+	void SetBossMovementStatus(EBossMovementStatus Status);
 
 	// Sphere that will aggro the ai if the player overlaps
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AI")
@@ -86,12 +88,12 @@ public:
 	float FireDelay;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AI")
 	float TimeSinceLastShot;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "FireBreath")
-	float FireBreathDuration;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AI")
 	bool bIsBreathingFire;
-	FTimerHandle FireBreathHandle;
 
+	// Melee values
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Melee")
+	float MeleeDamage;
 
 protected:
 	// Called when the game starts or when spawned
@@ -133,5 +135,9 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void HitPlayer(float DMG);
+
+	// Reminds the AI, where the player is and what to do
+	UFUNCTION(BlueprintCallable)
+	void RefreshAfterAttack();
 
 };

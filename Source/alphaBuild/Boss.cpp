@@ -46,8 +46,9 @@ ABoss::ABoss()
 
 	FireDelay = 0.1f;
 	TimeSinceLastShot = 0.1f;
-	FireBreathDuration = 3.f;
 	bIsBreathingFire = false;
+
+	MeleeDamage = 35.f;
 
 }
 
@@ -128,6 +129,7 @@ void ABoss::StopResting()
 	InterpSpeed = 2.5f;
 
 	//Set stuff in acordance to CombatTarget location
+	RefreshAfterAttack();
 }
 
 FRotator ABoss::GetLookAtRotationYaw(FVector Target)
@@ -151,7 +153,7 @@ void ABoss::AggroSphereOnOverlapBegin(UPrimitiveComponent* OverlappedComponent, 
 				SetBossMovementStatus(EBossMovementStatus::EMS_Teleport);
 				bInterpToMain = true;
 			}
-			else if (!bIsCharging && !bIsExhausted)
+			else if (!bIsCharging && !bIsExhausted && BossMovementStatus != EBossMovementStatus::EMS_FireBreath)
 			{
 				//not sure if I'll need this "else if"
 			}
@@ -168,7 +170,7 @@ void ABoss::AggroSphereOnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AA
 		if (Main)
 		{
 			bOverlappingAggroSphere = false;
-			if (!bIsCharging && !bIsExhausted)
+			if (!bIsCharging && !bIsExhausted && BossMovementStatus != EBossMovementStatus::EMS_FireBreath)
 			{
 				TeleportBehindCombatTarget();
 				SetBossMovementStatus(EBossMovementStatus::EMS_Teleport);
@@ -186,9 +188,9 @@ void ABoss::CombatSphereOnOverlapBegin(UPrimitiveComponent* OverlappedComponent,
 			if (Main)
 			{
 				bOverlappingCombatSphere = true;
-				if (!bIsCharging && !bIsExhausted)
+				if (!bIsCharging && !bIsExhausted && BossMovementStatus != EBossMovementStatus::EMS_FireBreath)
 				{
-
+					SetBossMovementStatus(EBossMovementStatus::EMS_Melee);
 				}
 			}
 		}
@@ -204,9 +206,9 @@ void ABoss::CombatSphereOnOverlapEnd(UPrimitiveComponent* OverlappedComponent, A
 			if (Main)
 			{
 				bOverlappingCombatSphere = false;
-				if (!bIsCharging && !bIsExhausted)
+				if (!bIsCharging && !bIsExhausted && BossMovementStatus != EBossMovementStatus::EMS_FireBreath)
 				{
-
+					// Not sure if I'll be neding this as well
 				}
 			}
 		}
@@ -216,13 +218,14 @@ void ABoss::CombatSphereOnOverlapEnd(UPrimitiveComponent* OverlappedComponent, A
 void ABoss::StartFireBreath()
 {
 	bIsBreathingFire = true;
-	SetBossMovementStatus(EBossMovementStatus::EMS_FireBreath);
-	GetWorldTimerManager().SetTimer(ChargeHandle, this, &ABoss::StopFireBreath, ExhaustedTime);
 }
 
 void ABoss::StopFireBreath()
 {
 	bIsBreathingFire = false;
+
+	//Set stuff in acordance to CombatTarget location
+	RefreshAfterAttack();
 }
 
 void ABoss::ChargeBoxOnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
@@ -288,4 +291,25 @@ void ABoss::HitPlayer(float DMG)
 		UE_LOG(LogTemp, Warning, TEXT("Player Got Hit!"));
 	}
 	UE_LOG(LogTemp, Warning, TEXT("HitPlayer()"));
+}
+
+void ABoss::RefreshAfterAttack()
+{
+	if (bOverlappingCombatSphere)
+	{
+		SetBossMovementStatus(EBossMovementStatus::EMS_Melee);
+	}
+	else if (bOverlappingAggroSphere)
+	{
+		SetBossMovementStatus(EBossMovementStatus::EMS_Walk);
+	}
+	else
+	{
+		SetBossMovementStatus(EBossMovementStatus::EMS_Teleport);
+	}
+}
+
+void ABoss::SetBossMovementStatus(EBossMovementStatus Status)
+{ 
+	BossMovementStatus = Status;
 }
