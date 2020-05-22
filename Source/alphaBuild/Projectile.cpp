@@ -11,6 +11,7 @@
 #include "Sound/SoundCue.h"
 #include "Main.h"
 #include "Enemy.h"
+#include "Shield.h"
 
 // Sets default values
 AProjectile::AProjectile()
@@ -34,7 +35,7 @@ AProjectile::AProjectile()
 	CurrentLifeSpan = 0.f;
 	bDestroyOnHit = false;
 	bHarmsMain = false;
-
+	bBlocked = false;
 }
 
 // Called when the game starts or when spawned
@@ -68,7 +69,7 @@ void AProjectile::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActo
 		if (bHarmsMain)
 		{
 			AMain* Main = Cast<AMain>(OtherActor);
-			if (Main)
+		    if (Main && !bBlocked)
 			{
 				FRotator ToTargetRotation = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), Main->GetActorLocation());
 				FRotator YawToTargetRotation = FRotator(0.f, ToTargetRotation.Yaw, 0.f);

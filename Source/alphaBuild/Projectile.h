@@ -41,6 +41,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, category = "Projectile")
 	bool bHarmsMain;
 
+	bool bBlocked;
+
 	UPROPERTY()
 	FVector ForwardVector;
 
