@@ -45,7 +45,6 @@ void AProjectile::BeginPlay()
 	ForwardVector = GetActorForwardVector();
 	
 	HitBox->OnComponentBeginOverlap.AddDynamic(this, &AProjectile::OnOverlapBegin);
-	HitBox->OnComponentEndOverlap.AddDynamic(this, &AProjectile::OnOverlapEnd);
 
 }
 
@@ -64,8 +63,6 @@ void AProjectile::Tick(float DeltaTime)
 
 void AProjectile::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	UE_LOG(LogTemp, Warning, TEXT("OnOverlapBegin()"));
-
 	if (OtherActor)
 	{
 		if (bHarmsMain)
@@ -99,11 +96,6 @@ void AProjectile::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActo
 			}
 		}
 	}
-}
-
-void AProjectile::OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
-{
-	UE_LOG(LogTemp, Warning, TEXT("OnOverlapEnd()"));
 }
 
 void AProjectile::OverlapUtility()

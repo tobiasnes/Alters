@@ -46,6 +46,7 @@ ABoss::ABoss()
 
 	FireDelay = 0.1f;
 	TimeSinceLastShot = 0.1f;
+	Walktimer = 0.f;
 	bIsBreathingFire = false;
 
 	MeleeDamage = 35.f;
@@ -96,6 +97,15 @@ void ABoss::Tick(float DeltaTime)
 		SetActorLocation(GetActorLocation() + Movement);
 	}
 
+	if (BossMovementStatus == EBossMovementStatus::EMS_Walk)
+	{
+		Walktimer += DeltaTime;
+		if (Walktimer >= 1.f)
+		{
+			SetBossMovementStatus(EBossMovementStatus::EMS_FireBreath);
+		}
+	}
+
 	if (bIsBreathingFire)
 	{
 		if (TimeSinceLastShot >= FireDelay)
@@ -105,7 +115,10 @@ void ABoss::Tick(float DeltaTime)
 				FVector Location = GetMesh()->GetSocketLocation("Head_Socket");
 				FTransform FireSpawnTransform;
 				FireSpawnTransform.SetLocation(Location);
-				FRotator Rotation = GetMesh()->GetSocketRotation("Head_Socekt");
+				FRotator Rotation = FRotator::ZeroRotator;
+				FVector trash;
+				GetMesh()->GetSocketWorldLocationAndRotation("Head_Socket", trash, Rotation);
+				// UE_LOG(LogTemp, Warning, TEXT("%f, %f, %f"), Rotation.Pitch, Rotation.Yaw, Rotation.Roll);
 				FRotator YawRotation = FRotator(0.f, Rotation.Yaw, 0.f);
 				FireSpawnTransform.SetRotation(YawRotation.Quaternion());
 				GetWorld()->SpawnActor<AProjectile>(FireSpawnerClass, FireSpawnTransform);
@@ -301,6 +314,7 @@ void ABoss::RefreshAfterAttack()
 	}
 	else if (bOverlappingAggroSphere)
 	{
+		Walktimer = 0.f;
 		SetBossMovementStatus(EBossMovementStatus::EMS_Walk);
 	}
 	else

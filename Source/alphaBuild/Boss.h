@@ -88,6 +88,8 @@ public:
 	float FireDelay;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AI")
 	float TimeSinceLastShot;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AI")
+	float Walktimer;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AI")
 	bool bIsBreathingFire;
 
@@ -128,9 +130,9 @@ public:
 	void StopResting();
 
 	// Fire Breath
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	void StartFireBreath();
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	void StopFireBreath();
 
 	UFUNCTION(BlueprintCallable)
