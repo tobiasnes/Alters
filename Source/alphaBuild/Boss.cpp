@@ -100,7 +100,9 @@ void ABoss::Tick(float DeltaTime)
 	if (BossMovementStatus == EBossMovementStatus::EMS_Walk)
 	{
 		Walktimer += DeltaTime;
-		if (Walktimer >= 1.f)
+		FVector Movement = GetActorForwardVector() * DeltaTime * MovementSpeed * 100.f;
+		LaunchCharacter(Movement, true, true);
+		if (Walktimer >= 1.5f)
 		{
 			SetBossMovementStatus(EBossMovementStatus::EMS_FireBreath);
 		}
@@ -186,7 +188,6 @@ void ABoss::AggroSphereOnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AA
 			bOverlappingAggroSphere = false;
 			if (!bIsCharging && !bIsExhausted && BossMovementStatus != EBossMovementStatus::EMS_FireBreath)
 			{
-				TeleportBehindCombatTarget();
 				SetBossMovementStatus(EBossMovementStatus::EMS_Teleport);
 			}
 		}
