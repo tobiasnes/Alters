@@ -125,18 +125,6 @@ void AShield::ShieldCombatOnOverlapBegin(UPrimitiveComponent* OverlappedComponen
 				UE_LOG(LogTemp, Warning, TEXT("Overlap Shield Begin"));
 			}
 		}
-		AProjectile* Projectile = Cast<AProjectile>(OtherActor);
-		if (Projectile)
-		{
-			Projectile->bBlocked = true;
-
-			if (Projectile->bBlocked)
-			{
-				UE_LOG(LogTemp, Warning, TEXT("yo mama gay"));
-				Projectile->OverlapUtility();
-			}
-			
-		}
 	}
 }
 

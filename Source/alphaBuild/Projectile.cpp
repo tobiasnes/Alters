@@ -35,7 +35,6 @@ AProjectile::AProjectile()
 	CurrentLifeSpan = 0.f;
 	bDestroyOnHit = false;
 	bHarmsMain = false;
-	bBlocked = false;
 }
 
 // Called when the game starts or when spawned
@@ -69,13 +68,16 @@ void AProjectile::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActo
 		if (bHarmsMain)
 		{
 			AMain* Main = Cast<AMain>(OtherActor);
-		    if (Main && !bBlocked)
+		    if (Main)
 			{
-				FRotator ToTargetRotation = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), Main->GetActorLocation());
-				FRotator YawToTargetRotation = FRotator(0.f, ToTargetRotation.Yaw, 0.f);
-				// get forward vector
-				FVector Direction = FRotationMatrix(YawToTargetRotation).GetUnitAxis(EAxis::X);
-				Main->TakeDMG(Damage, KnockBack, ForwardVector + FVector(0.f, 0.f, 0.1f));
+				if (!Main->bBlocking)
+				{
+					FRotator ToTargetRotation = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), Main->GetActorLocation());
+					FRotator YawToTargetRotation = FRotator(0.f, ToTargetRotation.Yaw, 0.f);
+					// get forward vector
+					FVector Direction = FRotationMatrix(YawToTargetRotation).GetUnitAxis(EAxis::X);
+					Main->TakeDMG(Damage, KnockBack, ForwardVector + FVector(0.f, 0.f, 0.1f));
+				}
 				OverlapUtility();
 			}
 		}

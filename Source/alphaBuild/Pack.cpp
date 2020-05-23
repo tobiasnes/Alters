@@ -109,16 +109,7 @@ void APack::AggroSphereOnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AA
 		{
 			if (Main)
 			{
-				MoveTo = nullptr;
-				if (!bStunned)
-				{
-					SetSmallEnemyMovementStatus(EPackMovementStatus::EMS_Idle);
-				}
-				if (AIController)
-				{
-					AIController->StopMovement();
-					bOverlappingAggroSphere = false;
-				}
+				bOverlappingAggroSphere = false;
 			}
 		}
 	}
