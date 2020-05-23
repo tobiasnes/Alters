@@ -28,6 +28,7 @@ ALever::ALever()
 	DegreesRotated = 0.f;
 
 	bLeverActive = true;
+	bActivatesOnOverlap = false;
 
 }
 
@@ -89,12 +90,16 @@ void ALever::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* Ot
 		AMain* Main = Cast<AMain>(OtherActor);
 		if (Main)
 		{
+			if (bActivatesOnOverlap)
+			{
+				PullLever();
+			}
 			Main->SetActiveOverlappingItem(this);
 		}
 		AProjectile* Arrow = Cast<AProjectile>(OtherActor);
 		if (Arrow)
 		{
-			if (!Arrow->bHarmsMain)
+			if (!Arrow->bHarmsMain && !bActivatesOnOverlap)
 			{
 				PullLever();
 			}
