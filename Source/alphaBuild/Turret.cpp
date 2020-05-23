@@ -57,7 +57,7 @@ void ATurret::Tick(float DeltaTime)
 		FVector Direction = FRotationMatrix(YawToTargetRotation).GetUnitAxis(EAxis::X);
 
 		FTransform CrystalSpawnTransform;
-		CrystalSpawnTransform.SetLocation(GetActorLocation() + (Direction * 10.f) + FVector(0.f, 0.f, 50.f));
+		CrystalSpawnTransform.SetLocation(GetActorLocation() + (Direction * 10.f) + FVector(0.f, 0.f, 150.f));
 		CrystalSpawnTransform.SetRotation(YawToTargetRotation.Quaternion());
 		CrystalSpawnTransform.SetScale3D(FVector(1.f));
 		GetWorld()->SpawnActor<AProjectile>(CrystalSpawnerClass, CrystalSpawnTransform);
