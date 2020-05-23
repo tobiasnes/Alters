@@ -165,7 +165,6 @@ void ABoss::AggroSphereOnOverlapBegin(UPrimitiveComponent* OverlappedComponent, 
 			if (!CombatTarget)
 			{
 				CombatTarget = Main;
-				TeleportBehindCombatTarget();
 				SetBossMovementStatus(EBossMovementStatus::EMS_Teleport);
 				bInterpToMain = true;
 			}
