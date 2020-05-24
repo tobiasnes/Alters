@@ -74,6 +74,17 @@ void ABoss::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+
+	if (GetActorLocation().Z < -400.f)
+	{
+		SetBossMovementStatus(EBossMovementStatus::EMS_Teleport);
+		GetWorld()->GetTimerManager().ClearTimer(ChargeHandle);
+		bIsCharging = false;
+		bIsExhausted = false;
+		InterpSpeed = 2.5f;
+		bInterpToMain = true;
+	}
+
 	if (bInterpToMain && CombatTarget)
 	{
 		FRotator LookAtYaw = GetLookAtRotationYaw(CombatTarget->GetActorLocation());
@@ -93,7 +104,7 @@ void ABoss::Tick(float DeltaTime)
 	if (bIsCharging)
 	{
 		FVector Movement = GetActorForwardVector() * DeltaTime * ChargeSpeed;
-
+		UE_LOG(LogTemp, Warning, TEXT("%f %f %f"), Movement.X, Movement.Y, Movement.Z);
 		SetActorLocation(GetActorLocation() + Movement);
 	}
 
@@ -135,6 +146,7 @@ void ABoss::StartResting()
 {
 	bIsCharging = false;
 	bIsExhausted = true;
+	bInterpToMain = false;
 	SetBossMovementStatus(EBossMovementStatus::EMS_Idle);
 	GetWorldTimerManager().SetTimer(ChargeHandle, this, &ABoss::StopResting, ExhaustedTime);
 }
@@ -143,6 +155,7 @@ void ABoss::StopResting()
 {
 	bIsExhausted = false;
 	InterpSpeed = 2.5f;
+	bInterpToMain = true;
 
 	//Set stuff in acordance to CombatTarget location
 	RefreshAfterAttack();
@@ -188,6 +201,7 @@ void ABoss::AggroSphereOnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AA
 			if (!bIsCharging && !bIsExhausted && BossMovementStatus != EBossMovementStatus::EMS_FireBreath)
 			{
 				SetBossMovementStatus(EBossMovementStatus::EMS_Teleport);
+				UE_LOG(LogTemp, Warning, TEXT("DO IT!"));
 			}
 		}
 	}
