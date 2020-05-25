@@ -110,12 +110,14 @@ AMain::AMain()
 
 	bIsAiming = false;
 
+	
 }
 
 // Called when the game starts or when spawned
 void AMain::BeginPlay()
 {
 	Super::BeginPlay();
+
 
 	// Configure character movement
 	GetCharacterMovement()->bOrientRotationToMovement = true; // Character faces in the direction of input...
@@ -124,7 +126,50 @@ void AMain::BeginPlay()
 	LastSafeDrop = GetActorLocation();
 	bIsInDashStyle = true;
 	AimArrow->SetHiddenInGame(true);
+	SetActiveOverlappingItem(nullptr);
 	
+	UWorld* World = GetWorld();
+	if (World)
+	{
+		FString CurrentLevel = World->GetMapName();
+		CurrentLevelName = (*CurrentLevel);
+
+		//UEDPIE_0_Level_2
+		if (CurrentLevelName == "UEDPIE_0_Level_2")
+		{
+			bFuryUnlocked = true;
+			bRangedUnlocked = true;
+			bDefenceUnlocked = true;
+			bDashKnifeUnlocked = true;
+			bWeaponEquipped = true;
+			bBowEquipped = true;
+			bShieldEquipped = true;
+
+			UE_LOG(LogTemp, Warning, TEXT("Equipped Lvl2 Gear."));
+			UE_LOG(LogTemp, Warning, TEXT("%s"), *CurrentLevel);
+
+			GetWorld()->SpawnActor<AWeapon>(SpawnerClass, FTransform(GetActorLocation()));
+			AWeapon* Weapon = Cast<AWeapon>(ActiveOverlappingItem);
+			if (Weapon)
+			{
+				UE_LOG(LogTemp, Warning, TEXT("Overlapping with Sword."));
+				Weapon->Equip(this);
+				SetActiveOverlappingItem(nullptr);
+				if (EquippedWeapon)
+				{
+					EquippedWeapon->DeactivateCollision();
+					//EquippedWeapon->Destroy();
+					//EquippedWeapon = false;
+
+					EquippedWeapon->KnifeMesh();
+					EquippedWeapon->CombatCollision->SetRelativeScale3D(FVector(0.3f, 0.25f, 0.6f));
+					EquippedWeapon->CombatCollision->SetRelativeLocation(FVector(0.5f, 0.f, 30.f));
+				}
+			}
+
+		}
+	}
+
 
 		
 }
@@ -287,6 +332,7 @@ void AMain::EquipPressed()
 			//EquipMesh();
 			bFuryUnlocked = true;
 			bDashKnifeUnlocked = true;
+			bFuryWidget = true;
 			StyleIndex = 2;
 			GetCharacterMovement()->MaxWalkSpeed = MovementSpeedFury;
 			Weapon->Equip(this);
@@ -310,6 +356,7 @@ void AMain::EquipPressed()
 				AimArrow->SetHiddenInGame(true);
 			}
 			bDefenceUnlocked = true;
+			bDefenceWidget = true;
 			StyleIndex = 3;
 			GetCharacterMovement()->MaxWalkSpeed = MovementSpeedDefence;
 			Shield->Equip(this);
@@ -331,6 +378,7 @@ void AMain::EquipPressed()
 			}
 			bIsInRangedStyle = true;
 			bRangedUnlocked = true;
+			bRangedWidget = true;
 			StyleIndex = 4;
 			GetCharacterMovement()->MaxWalkSpeed = MovementSpeedRanged;
 			Bow->Equip(this);
@@ -930,3 +978,27 @@ void AMain::SetCameraDistance(float Distance)
 		bZoom = true;
 	}
 }
+
+/*void AMain::SaveGame()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Game Saved."));
+	UMySaveGame* SaveGameInstance = Cast<UMySaveGame>(UGameplayStatics::CreateSaveGameObject(UMySaveGame::StaticClass()));
+	SaveGameInstance->PlayerLocation = this->GetActorLocation();
+	SaveGameInstance->PlayerRotation = this->GetActorRotation();
+	SaveGameInstance->PlayerHP = HP;
+
+	UGameplayStatics::SaveGameToSlot(SaveGameInstance, TEXT("MySlot"), 0);
+}
+
+void AMain::LoadGame()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Game Loaded."));
+	UMySaveGame* SaveGameInstance = Cast<UMySaveGame>(UGameplayStatics::CreateSaveGameObject(UMySaveGame::StaticClass()));
+
+	SaveGameInstance = Cast<UMySaveGame>(UGameplayStatics::LoadGameFromSlot(("MySlot"), 0));
+
+	this->SetActorLocation(SaveGameInstance->PlayerLocation);
+	this->SetActorRotation(SaveGameInstance->PlayerRotation);
+	HP = SaveGameInstance->PlayerHP;
+
+}*/

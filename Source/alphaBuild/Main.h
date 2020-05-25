@@ -55,7 +55,7 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Movement)
 	FVector LastSafeDrop; // The last safe location to drop the player if he where to fall off the map
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Movement)
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Movement)
 	int StyleIndex;
 
     float InterpSpeed;
@@ -79,6 +79,13 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Styles)
 	bool bRangedUnlocked{ false };
 
+	//ability widgets
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Styles)
+		bool bFuryWidget{ false };
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Styles)
+		bool bDefenceWidget{ false };
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Styles)
+		bool bRangedWidget{ false };
 	// Ability values
 	// Dash values
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Ability)
@@ -107,6 +114,10 @@ public:
 	//Spawn Bow
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawning")
 		TSubclassOf<class ABow> BowSpawnerClass;
+
+	//void SaveGame();
+
+	//void LoadGame();
 
 protected:
 	// Called when the game starts or when spawned
@@ -139,6 +150,8 @@ public:
 
 	bool bMove1Pressed;
 	bool bMove2Pressed;
+
+	FName CurrentLevelName;
 
 	//Weapon Equips
 	bool bEquipPressed;
@@ -202,7 +215,7 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	bool bIsInDashStyle;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	bool bIsInRangedStyle;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
