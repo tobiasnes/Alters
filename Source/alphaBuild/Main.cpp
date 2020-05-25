@@ -110,10 +110,6 @@ AMain::AMain()
 
 	bIsAiming = false;
 
-	AlphaEdge = FVector(15650.f, 0.f, 0.f);
-
-
-
 }
 
 // Called when the game starts or when spawned
@@ -151,13 +147,6 @@ void AMain::Tick(float DeltaTime)
 		FRotator InterpRotation = FMath::RInterpTo(GetActorRotation(), LookAtYaw, DeltaTime, InterpSpeed);
 
 		SetActorRotation(InterpRotation);
-	}
-
-	PlayerLocation = GetActorLocation();
-	if (PlayerLocation.X >= AlphaEdge.X)
-	{
-		Freeze();
-		HP = 0;
 	}
 
 	if (bZoom)

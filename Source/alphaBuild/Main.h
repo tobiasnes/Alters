@@ -176,7 +176,7 @@ public:
 	class AShield* EquippedShield;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Items")
-		class ABow* EquippedBow;
+	class ABow* EquippedBow;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Items")
 	class AItem* ActiveOverlappingItem;
@@ -219,10 +219,6 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Anims")
 	class UAnimMontage* AlterMontage;
-
-	FVector AlphaEdge;
-
-	FVector PlayerLocation;
 
 	//UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Anims")
 		//class UAnimMontage* DeathMontage;
