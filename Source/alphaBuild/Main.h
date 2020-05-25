@@ -70,13 +70,13 @@ public:
 	FRotator GetLookAtRotationYaw(FVector Target);
 
 	// ability unlocked?
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Styles)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Styles)
 	bool bDashKnifeUnlocked{ false };
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Styles)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Styles)
 	bool bFuryUnlocked{ false };
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Styles)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Styles)
 	bool bDefenceUnlocked{ false };
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Styles)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Styles)
 	bool bRangedUnlocked{ false };
 
 	// Ability values
@@ -142,10 +142,11 @@ public:
 
 	//Weapon Equips
 	bool bEquipPressed;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Unlocks")
 	bool bWeaponEquipped;
-
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Unlocks")
 	bool bShieldEquipped;
-
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Unlocks")
 	bool bBowEquipped;
 
 	bool bDashAttack;
@@ -169,13 +170,13 @@ public:
 	UFUNCTION()
 	void ResetDash();
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Items")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Items")
 	class AWeapon* EquippedWeapon;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Items")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Items")
 	class AShield* EquippedShield;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Items")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Items")
 	class ABow* EquippedBow;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Items")
