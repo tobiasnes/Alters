@@ -69,7 +69,7 @@ public:
 	float ChargeDamage;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Charge")
 	float ExhaustedTime;
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AI")
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "AI")
 	bool bIsCharging;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AI")
 	bool bIsExhausted;
@@ -77,6 +77,7 @@ public:
 
 	// Everything interping
 	float InterpSpeed;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "AI")
 	bool bInterpToMain;
 	FRotator GetLookAtRotationYaw(FVector Target);
 

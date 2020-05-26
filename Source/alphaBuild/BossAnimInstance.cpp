@@ -35,5 +35,9 @@ void UBossAnimInstance::UpdateAnimationProperties()
 		FVector Speed = Pawn->GetVelocity();
 		FVector LateralSpeed = FVector(Speed.X, Speed.Y, 0.f);
 		MovementSpeed = LateralSpeed.Size();
+		if (Boss)
+		{
+			HP = Boss->HP;
+		}
 	}
 }

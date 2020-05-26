@@ -30,4 +30,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Movement)
 	class ABoss* Boss;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Status)
+	float HP;
+
 };
