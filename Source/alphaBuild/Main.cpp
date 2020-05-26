@@ -132,8 +132,7 @@ void AMain::BeginPlay()
 	if (World)
 	{
 		FString CurrentLevel = World->GetMapName();
-		CurrentLevelName = (*CurrentLevel);
-
+		FName CurrentLevelName(*CurrentLevel);
 		//UEDPIE_0_Level_2
 		if (CurrentLevelName == "UEDPIE_0_Level_2")
 		{
@@ -148,8 +147,8 @@ void AMain::BeginPlay()
 			UE_LOG(LogTemp, Warning, TEXT("Equipped Lvl2 Gear."));
 			UE_LOG(LogTemp, Warning, TEXT("%s"), *CurrentLevel);
 
-			GetWorld()->SpawnActor<AWeapon>(SpawnerClass, FTransform(GetActorLocation()));
-			AWeapon* Weapon = Cast<AWeapon>(ActiveOverlappingItem);
+			//GetWorld()->SpawnActor<AWeapon>(SpawnerClass, FTransform(GetActorLocation()));
+			AWeapon* Weapon = Cast<AWeapon>(GetWorld()->SpawnActor<AWeapon>(SpawnerClass, FTransform(GetActorLocation())));
 			if (Weapon)
 			{
 				UE_LOG(LogTemp, Warning, TEXT("Overlapping with Sword."));
@@ -166,11 +165,40 @@ void AMain::BeginPlay()
 					EquippedWeapon->CombatCollision->SetRelativeLocation(FVector(0.5f, 0.f, 30.f));
 				}
 			}
+		}
+		if (CurrentLevelName == "UEDPIE_0_Level_3")
+		{
+			bFuryUnlocked = true;
+			bRangedUnlocked = true;
+			bDefenceUnlocked = true;
+			bDashKnifeUnlocked = true;
+			bWeaponEquipped = true;
+			bBowEquipped = true;
+			bShieldEquipped = true;
 
+			UE_LOG(LogTemp, Warning, TEXT("Equipped Lvl3 Gear."));
+			UE_LOG(LogTemp, Warning, TEXT("%s"), *CurrentLevel);
+
+			//GetWorld()->SpawnActor<AWeapon>(SpawnerClass, FTransform(GetActorLocation()));
+			AWeapon* Weapon = Cast<AWeapon>(GetWorld()->SpawnActor<AWeapon>(SpawnerClass, FTransform(GetActorLocation())));
+			if (Weapon)
+			{
+				UE_LOG(LogTemp, Warning, TEXT("Overlapping with Sword."));
+				Weapon->Equip(this);
+				SetActiveOverlappingItem(nullptr);
+				if (EquippedWeapon)
+				{
+					EquippedWeapon->DeactivateCollision();
+					//EquippedWeapon->Destroy();
+					//EquippedWeapon = false;
+
+					EquippedWeapon->KnifeMesh();
+					EquippedWeapon->CombatCollision->SetRelativeScale3D(FVector(0.3f, 0.25f, 0.6f));
+					EquippedWeapon->CombatCollision->SetRelativeLocation(FVector(0.5f, 0.f, 30.f));
+				}
+			}
 		}
 	}
-
-
 		
 }
 

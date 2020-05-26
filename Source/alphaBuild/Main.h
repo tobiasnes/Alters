@@ -151,7 +151,7 @@ public:
 	bool bMove1Pressed;
 	bool bMove2Pressed;
 
-	FName CurrentLevelName;
+	//FName CurrentLevelName;
 
 	//Weapon Equips
 	bool bEquipPressed;
