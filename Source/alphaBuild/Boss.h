@@ -15,6 +15,7 @@ enum class EBossMovementStatus :uint8
 	EMS_Walk			UMETA(DisplayName = "Walk"),
 	EMS_FireBreath		UMETA(DisplayName = "FireBreath"),
 	EMS_Melee			UMETA(DisplayName = "Melee"),
+	EMS_Exhausted		UMETA(DisplayName = "Exhauseted"),
 
 	EMS_MAX				UMETA(DisplayName = "DefaultMAX")
 };

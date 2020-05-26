@@ -147,7 +147,7 @@ void ABoss::StartResting()
 	bIsCharging = false;
 	bIsExhausted = true;
 	bInterpToMain = false;
-	SetBossMovementStatus(EBossMovementStatus::EMS_Idle);
+	SetBossMovementStatus(EBossMovementStatus::EMS_Exhausted);
 	GetWorldTimerManager().SetTimer(ChargeHandle, this, &ABoss::StopResting, ExhaustedTime);
 }
 
