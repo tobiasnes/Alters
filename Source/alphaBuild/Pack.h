@@ -57,6 +57,7 @@ public:
 
 	bool bStunned;
 	FTimerHandle StunHandle;
+	FTimerHandle MoveHandle;
 
 protected:
 	// Called when the game starts or when spawned
@@ -116,5 +117,7 @@ public:
 	void StunnStart(float Time);
 	UFUNCTION()
 	void StunnEnd();
+
+	void ContinnueChase();
 
 };

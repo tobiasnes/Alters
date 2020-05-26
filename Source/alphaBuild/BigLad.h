@@ -70,6 +70,8 @@ public:
 	float ExhaustedTime;
 	FTimerHandle ChargeHandle;
 
+	FTimerHandle MoveHandle;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -133,5 +135,7 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void HitPlayer(float DMG);
+
+	void ContinnueChase();
 
 };

@@ -55,7 +55,7 @@ void AEnemy::TakeDMG(float DamageValue, float KnockBackForce, FVector Direction)
 	if (bCanTakeDamage)
 	{
 		HP -= DamageValue; // Deals Damage
-		LaunchCharacter(Direction * KnockBackForce, true, true); // launches enemy to make the player feel the force from the hit
+		LaunchCharacter((Direction * KnockBackForce), true, true); // launches enemy to make the player feel the force from the hit
 		bCanTakeDamage = false;
 		GetCharacterMovement()->StopMovementImmediately();
 		GetCharacterMovement()->BrakingFrictionFactor = 0.f; // Removes friction

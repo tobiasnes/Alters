@@ -18,13 +18,13 @@ APack::APack()
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	AggroSphere = CreateAbstractDefaultSubobject<USphereComponent>(TEXT("AggroSphere"));
+	AggroSphere = CreateDefaultSubobject<USphereComponent>(TEXT("AggroSphere"));
 	AggroSphere->SetupAttachment(GetRootComponent());
-	AggroSphere->InitSphereRadius(600.f);
+	AggroSphere->InitSphereRadius(2000.f);
 
-	CombatSphere = CreateAbstractDefaultSubobject<USphereComponent>(TEXT("CombatSphere"));
+	CombatSphere = CreateDefaultSubobject<USphereComponent>(TEXT("CombatSphere"));
 	CombatSphere->SetupAttachment(GetRootComponent());
-	CombatSphere->InitSphereRadius(75.f);
+	CombatSphere->InitSphereRadius(100.f);
 
 	AttackBox = CreateDefaultSubobject<UBoxComponent>(TEXT("AttackBox"));
 	AttackBox->SetupAttachment(GetRootComponent());
@@ -69,6 +69,14 @@ void APack::Tick(float DeltaTime)
 		FRotator InterpRotation = FMath::RInterpTo(GetActorRotation(), LookAtYaw, DeltaTime, InterpSpeed);
 
 		SetActorRotation(InterpRotation);
+	}
+
+	if (!bCanTakeDamage)
+	{
+		if (HP > 0.f)
+		{
+			GetWorldTimerManager().SetTimer(MoveHandle, this, &APack::ContinnueChase, 0.1f);
+		}
 	}
 
 }
@@ -279,4 +287,12 @@ void APack::StunnEnd()
 		PackMovementStatus = EPackMovementStatus::EMS_Idle;
 	}
 	GetWorld()->GetTimerManager().ClearTimer(StunHandle);
+}
+
+void APack::ContinnueChase()
+{
+	if (MoveTo)
+	{
+		MoveToTarget(MoveTo);
+	}
 }

@@ -96,6 +96,14 @@ void ABigLad::Tick(float DeltaTime)
 
 		SetActorLocation(GetActorLocation() + Movement);
 	}
+
+	if (!bCanTakeDamage)
+	{
+		if (HP > 0.f)
+		{
+			GetWorldTimerManager().SetTimer(MoveHandle, this, &ABigLad::ContinnueChase, 0.1f);
+		}
+	}
 }
 
 FRotator ABigLad::GetLookAtRotationYaw(FVector Target)
@@ -158,9 +166,10 @@ void ABigLad::AggroSphereOnOverlapEnd(UPrimitiveComponent* OverlappedComponent, 
 		{
 			if (Main)
 			{
-				CombatTarget = nullptr;
-				SetInterpToMain(false);
-				SetBigLadMovementStatus(EBigLadMovementStatus::EMS_Idle);
+				// removed for now
+				//CombatTarget = nullptr;
+				//SetInterpToMain(false);
+				//SetBigLadMovementStatus(EBigLadMovementStatus::EMS_Idle);
 			}
 		}
 	}
@@ -343,4 +352,12 @@ void ABigLad::HitPlayer(float DMG)
 		UE_LOG(LogTemp, Warning, TEXT("Player Got Hit!"));
 	}
 	UE_LOG(LogTemp, Warning, TEXT("HitPlayer()"));
+}
+
+void ABigLad::ContinnueChase()
+{
+	if (CombatTarget && !bIsCharging && !bIsExhausted)
+	{
+		MoveToTarget(CombatTarget);
+	}
 }
