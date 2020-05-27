@@ -85,6 +85,7 @@ void ACat::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* Othe
 			SavedMaxWalkSpeed = Main->GetCharacterMovement()->MaxWalkSpeed;
 			SavedRotationRate = Main->GetCharacterMovement()->RotationRate;
 			Main->Freeze();
+			Main->StopDashing();
 			Main->SetCameraDistance(400.f);
 		}
 	}
