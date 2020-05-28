@@ -869,6 +869,10 @@ void AMain::AttackEnd()
 		{
 			Attack2();
 		}
+		else if (StyleIndex == 3)
+		{
+			ShieldStun();
+		}
 	}
 }
 
@@ -918,8 +922,9 @@ void AMain::ShieldStun()
 {
 	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
 	
-	if (!bBlocking)
+	if (!bBlocking && !bAttacking)
 	{
+		bAttacking = true;
 		if (AnimInstance && AlterMontage)
 		{
 			AnimInstance->Montage_Play(AlterMontage, 1.35f);
