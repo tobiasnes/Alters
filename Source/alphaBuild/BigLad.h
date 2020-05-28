@@ -55,6 +55,7 @@ public:
 	class UBoxComponent* AttackBox;
 
 	float InterpSpeed;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Movement")
 	bool bInterpToMain;
 	void SetInterpToMain(bool interp);
 	FRotator GetLookAtRotationYaw(FVector Target);
