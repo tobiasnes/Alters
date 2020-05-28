@@ -32,11 +32,12 @@ void UBossAnimInstance::UpdateAnimationProperties()
 
 	if (Pawn)
 	{
-		FVector Speed = Pawn->GetVelocity();
-		FVector LateralSpeed = FVector(Speed.X, Speed.Y, 0.f);
-		MovementSpeed = LateralSpeed.Size();
 		if (Boss)
 		{
+			float X = Boss->MoveDirection.X;
+			float Y = Boss->MoveDirection.Y;
+			MovementSpeed = 100 * sqrt((X * X) + (Y * Y));
+			UE_LOG(LogTemp, Warning, TEXT("%f %f %f"), X, Y, MovementSpeed);
 			HP = Boss->HP;
 		}
 	}

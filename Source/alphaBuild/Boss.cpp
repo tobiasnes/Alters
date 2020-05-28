@@ -111,8 +111,8 @@ void ABoss::Tick(float DeltaTime)
 	if (BossMovementStatus == EBossMovementStatus::EMS_Walk)
 	{
 		Walktimer += DeltaTime;
-		FVector Movement = GetActorForwardVector() * DeltaTime * MovementSpeed * 100.f;
-		LaunchCharacter(Movement, true, true);
+		MoveDirection = GetActorForwardVector() * DeltaTime * MovementSpeed;
+		SetActorLocation(GetActorLocation() + MoveDirection);
 		if (Walktimer >= 1.5f)
 		{
 			SetBossMovementStatus(EBossMovementStatus::EMS_FireBreath);

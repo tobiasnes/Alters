@@ -92,6 +92,8 @@ public:
 	float TimeSinceLastShot;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AI")
 	float Walktimer;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AI")
+	FVector MoveDirection;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AI")
 	bool bIsBreathingFire;
 
