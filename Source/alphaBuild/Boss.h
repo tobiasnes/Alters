@@ -144,4 +144,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void RefreshAfterAttack();
 
+	UFUNCTION(BlueprintCallable)
+	void JustStop();
+
 };

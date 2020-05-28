@@ -335,3 +335,13 @@ void ABoss::SetBossMovementStatus(EBossMovementStatus Status)
 { 
 	BossMovementStatus = Status;
 }
+
+void ABoss::JustStop()
+{
+	BossMovementStatus = EBossMovementStatus::EMS_Idle;
+	bIsBreathingFire = false;
+	bIsCharging = false;
+	bIsExhausted = false;
+	bInterpToMain = false;
+	MovementSpeed = 0.f;
+}
