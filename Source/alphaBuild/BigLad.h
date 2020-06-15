@@ -54,6 +54,10 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Attack")
 	class UBoxComponent* AttackBox;
 
+	// Decal for warning players about the BigLad's charge attack
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Decal", meta = (AllowPrivateAccess = "true"))
+	class UDecalComponent* ChargePath;
+
 	float InterpSpeed;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Movement")
 	bool bInterpToMain;

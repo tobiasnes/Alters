@@ -5,6 +5,7 @@
 #include "Components/SphereComponent.h"
 #include "Components/BoxComponent.h"
 #include "Components/SceneComponent.h"
+#include "Components/Decalcomponent.h"
 #include "AIController.h"
 #include "AIModule.h"
 #include "Main.h"
@@ -32,6 +33,9 @@ ABigLad::ABigLad()
 
 	AttackBox = CreateDefaultSubobject<UBoxComponent>(TEXT("AttackBox"));
 	AttackBox->SetupAttachment(GetRootComponent());
+
+	ChargePath = CreateDefaultSubobject<UDecalComponent>("ChargePath");
+	ChargePath->SetupAttachment(RootComponent);
 
 	bOverlappingCombatSphere = false;
 	bOverlappingWalkSphere = false;
@@ -67,6 +71,8 @@ void ABigLad::BeginPlay()
 	AttackBox->OnComponentBeginOverlap.AddDynamic(this, &ABigLad::AttackBoxOnOverlapBegin);
 	AttackBox->OnComponentEndOverlap.AddDynamic(this, &ABigLad::AttackBoxOnOverlapEnd);
 
+	ChargePath->SetHiddenInGame(true);
+
 }
 
 // Called every frame
@@ -86,6 +92,7 @@ void ABigLad::Tick(float DeltaTime)
 	{
 		bIsCharging = true;
 		InterpSpeed = 1.f;
+		ChargePath->SetHiddenInGame(false);
 		// Set Timer to stop Charge
 		GetWorldTimerManager().SetTimer(ChargeHandle, this, &ABigLad::StartResting, ChargeTime);
 	}
@@ -120,6 +127,7 @@ void ABigLad::SetInterpToMain(bool interp)
 
 void ABigLad::StartResting()
 {
+	ChargePath->SetHiddenInGame(true);
 	bIsCharging = false;
 	bIsExhausted = true;
 	GetWorldTimerManager().SetTimer(ChargeHandle, this, &ABigLad::StopResting, ExhaustedTime);
