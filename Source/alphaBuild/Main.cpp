@@ -219,22 +219,6 @@ void AMain::Tick(float DeltaTime)
 		if(HitResult)
 		{
 			AimArrow->SetHiddenInGame(false);
-			/*//GetWorld()->GetFirstPlayerController()->bShowMouseCursor = true;
-			FVector CursorFV = Hit.ImpactNormal;
-			FRotator CursorR = CursorFV.Rotation();
-
-
-			///Set the new direction of the pawn:
-			FVector AimDirection = CameraBoom->GetForwardVector(); //Hit.Location;
-			///Set Z to a little above ground
-			//FVector TempLocation = FVector(AimDirection.X, 0.f, 0.f);
-
-			///Pure vector math
-			FVector NewDirection = FVector(AimDirection.X, AimDirection.Y, 0.f); //TempLocation - GetActorLocation();
-			//NewDirection.Z = 0.f;
-			NewDirection.Normalize();
-			SetActorRotation(CameraBoom->GetComponentRotation()NewDirection.Rotation());
-			//UE_LOG(LogTemp, Warning, AimDirection.Y)*/
 			FRotator AimDirection = PlayerCamera->GetComponentRotation();
 			AimDirection.Pitch = 0.f;
 			SetActorRotation(AimDirection);
