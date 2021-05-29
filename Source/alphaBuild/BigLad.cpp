@@ -41,7 +41,7 @@ ABigLad::ABigLad()
 	bOverlappingWalkSphere = false;
 	MainInHitRange = false;
 
-	InterpSpeed = 2.5f;
+	InterpSpeed = 5.f;
 	bInterpToMain = false;
 
 	bIsCharging = false;
@@ -91,7 +91,7 @@ void ABigLad::Tick(float DeltaTime)
 	if ((BigLadMovementStatus == EBigLadMovementStatus::EMS_ChargeToTarget) && (!bIsCharging) && (!bIsExhausted))
 	{
 		bIsCharging = true;
-		InterpSpeed = 1.f;
+		SetInterpToMain(false);
 		ChargePath->SetHiddenInGame(false);
 		// Set Timer to stop Charge
 		GetWorldTimerManager().SetTimer(ChargeHandle, this, &ABigLad::StartResting, ChargeTime);
@@ -130,6 +130,8 @@ void ABigLad::StartResting()
 	ChargePath->SetHiddenInGame(true);
 	bIsCharging = false;
 	bIsExhausted = true;
+	InterpSpeed = 1.f;
+	SetInterpToMain(true);
 	GetWorldTimerManager().SetTimer(ChargeHandle, this, &ABigLad::StopResting, ExhaustedTime);
 }
 
