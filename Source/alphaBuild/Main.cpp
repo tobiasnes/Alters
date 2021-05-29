@@ -219,21 +219,25 @@ void AMain::Tick(float DeltaTime)
 		if(HitResult)
 		{
 			AimArrow->SetHiddenInGame(false);
-			//GetWorld()->GetFirstPlayerController()->bShowMouseCursor = true;
+			/*//GetWorld()->GetFirstPlayerController()->bShowMouseCursor = true;
 			FVector CursorFV = Hit.ImpactNormal;
 			FRotator CursorR = CursorFV.Rotation();
 
 
 			///Set the new direction of the pawn:
-			FVector CursorLocation = Hit.Location;
+			FVector AimDirection = CameraBoom->GetForwardVector(); //Hit.Location;
 			///Set Z to a little above ground
-			FVector TempLocation = FVector(CursorLocation.X, CursorLocation.Y, 30.f);
+			//FVector TempLocation = FVector(AimDirection.X, 0.f, 0.f);
 
 			///Pure vector math
-			FVector NewDirection = TempLocation - GetActorLocation();
-			NewDirection.Z = 0.f;
+			FVector NewDirection = FVector(AimDirection.X, AimDirection.Y, 0.f); //TempLocation - GetActorLocation();
+			//NewDirection.Z = 0.f;
 			NewDirection.Normalize();
-			SetActorRotation(NewDirection.Rotation());
+			SetActorRotation(CameraBoom->GetComponentRotation()NewDirection.Rotation());
+			//UE_LOG(LogTemp, Warning, AimDirection.Y)*/
+			FRotator AimDirection = PlayerCamera->GetComponentRotation();
+			AimDirection.Pitch = 0.f;
+			SetActorRotation(AimDirection);
 		}
 	}
 }
@@ -243,6 +247,7 @@ FRotator AMain::GetLookAtRotationYaw(FVector Target)
 	FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), Target);
 	FRotator LookAtRotationYaw(0.f, LookAtRotation.Yaw, 0.f);
 	return LookAtRotationYaw;
+
 }
 
 // Called to bind functionality to input
@@ -274,27 +279,27 @@ void AMain::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 void AMain::MoveUp(float Value)
 {
-	if ((Controller != nullptr) && (Value != 0.0f))
+	if ((Controller != nullptr) && (Value != 0.0f) && (!bIsAiming))
 	{
 		// Finds the forward direction
 		const FRotator Rotation = Controller->GetControlRotation();
 		const FRotator YawRotation(0.f, Rotation.Yaw, 0.f); // FRotationmatrix want's a full FRotator so Rotation.Yaw won't work
-
 		const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
 		AddMovementInput(Direction, Value);
+
 	}
 }
 
 void AMain::MoveRight(float Value)
 {
-	if ((Controller != nullptr) && (Value != 0.0f))
+	if ((Controller != nullptr) && (Value != 0.0f) && (!bIsAiming))
 	{
 		// Finds the forward direction
 		const FRotator Rotation = Controller->GetControlRotation();
 		const FRotator YawRotation(0.f, Rotation.Yaw, 0.f); // FRotationmatrix want's a full FRotator so Rotation.Yaw won't work
-
 		const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
 		AddMovementInput(Direction, Value);
+
 	}
 }
 
