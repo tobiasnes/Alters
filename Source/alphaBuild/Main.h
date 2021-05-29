@@ -41,6 +41,11 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Stats)
 	bool Frozen;
 
+	// Camera values
+	// Values for camera turning
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Camera)
+	float BaseTurnRate;
+
 	// Base movement values
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Movement)
 	float MovementSpeedDash;
@@ -135,6 +140,9 @@ public:
 
 	// Called for left and right input
 	void MoveRight(float Value);
+
+	// Camera
+	void TurnAtRate(float Rate);
 
 	// Style Swapping
 	void DashStyle();

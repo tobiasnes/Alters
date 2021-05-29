@@ -39,8 +39,8 @@ AMain::AMain()
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
 	CameraBoom->SetupAttachment(GetRootComponent());
 	CameraBoom->TargetArmLength = 1000.f;// Sets distance between Camera and player
-	CameraBoom->RelativeRotation = FRotator(-80.f, 0.f, 0.f);
-	CameraBoom->bUsePawnControlRotation = false; // Rotation not allowed
+	CameraBoom->RelativeRotation = FRotator(-20.f, 0.f, 0.f);
+	CameraBoom->bUsePawnControlRotation = true; // Rotation allowed
 	bZoom = false;
 	bReverseZoom = false;
 	ZoomTarget = 0.f;
@@ -72,6 +72,8 @@ AMain::AMain()
 	}
 	AimArrow->DecalSize = FVector(16.0f, 32.0f, 32.0f);
 	AimArrow->SetRelativeRotation(FRotator(90.0f, 0.0f, 0.0f).Quaternion());
+
+	BaseTurnRate = 1.f;
 
 	StyleIndex = 1;
 	MovementSpeedDash = 600.f;
@@ -264,6 +266,9 @@ void AMain::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 	PlayerInputComponent->BindAction("Equip", IE_Pressed, this, &AMain::EquipPressed);
 	PlayerInputComponent->BindAction("Equip", IE_Released, this, &AMain::EquipReleased);
+
+	PlayerInputComponent->BindAxis("Turn", this, &APawn::AddControllerYawInput);
+	PlayerInputComponent->BindAxis("TurnRate", this, &AMain::TurnAtRate);
 	
 }	
 
@@ -291,6 +296,11 @@ void AMain::MoveRight(float Value)
 		const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
 		AddMovementInput(Direction, Value);
 	}
+}
+
+void AMain::TurnAtRate(float Rate)
+{
+	AddControllerYawInput(Rate * BaseTurnRate * GetWorld()->GetDeltaSeconds());
 }
 
 void AMain::SetInterpToEnemy(bool Interp)
