@@ -8,6 +8,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Engine/World.h"
 #include "Sound/SoundCue.h"
+#include "Main.h"
 
 // Sets default values
 AItem::AItem()
@@ -56,15 +57,18 @@ void AItem::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* Oth
 	int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	//UE_LOG(LogTemp, Warning, TEXT("OnOverlapBegin()"));
-
-	if (OverlapParticles)
+	AMain* Main = Cast<AMain>(OtherActor);
+	if (Main)
 	{
-		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), OverlapParticles, GetActorLocation(), FRotator(0.f), true);
-	}
+		if (OverlapParticles)
+		{
+			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), OverlapParticles, GetActorLocation(), FRotator(0.f), true);
+		}
 
-	if (OverlapSound)
-	{
-		UGameplayStatics::PlaySound2D(this, OverlapSound);
+		if (OverlapSound)
+		{
+			UGameplayStatics::PlaySound2D(this, OverlapSound);
+		}
 	}
 	//Destroy();
 }
