@@ -44,8 +44,10 @@ ABigLad::ABigLad()
 	InterpSpeed = 5.f;
 	bInterpToMain = false;
 
+	bIsLockingOn = false;
 	bIsCharging = false;
 	bIsExhausted = false;
+	LockOnTime = 2.f;
 	ChargeSpeed = 1000.f;
 	ChargeTime = 2.f;
 	ExhaustedTime = 0.5f;
@@ -88,11 +90,21 @@ void ABigLad::Tick(float DeltaTime)
 		SetActorRotation(InterpRotation);
 	}
 
+	if (BigLadMovementStatus == EBigLadMovementStatus::EMS_LockOnTarget && (!bIsLockingOn) && (!bIsCharging) && (!bIsExhausted))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("lockon established"));
+		bIsLockingOn = true;
+		SetInterpToMain(true);
+		ChargePath->SetHiddenInGame(false);
+		GetWorldTimerManager().SetTimer(ChargeHandle, this, &ABigLad::StartCharging, LockOnTime);
+	}
+
 	if ((BigLadMovementStatus == EBigLadMovementStatus::EMS_ChargeToTarget) && (!bIsCharging) && (!bIsExhausted))
 	{
+		UE_LOG(LogTemp, Warning, TEXT("activate charge"));
 		bIsCharging = true;
 		SetInterpToMain(false);
-		ChargePath->SetHiddenInGame(false);
+		ChargePath->SetHiddenInGame(true);
 		// Set Timer to stop Charge
 		GetWorldTimerManager().SetTimer(ChargeHandle, this, &ABigLad::StartResting, ChargeTime);
 	}
@@ -125,30 +137,46 @@ void ABigLad::SetInterpToMain(bool interp)
 	bInterpToMain = interp;
 }
 
+void ABigLad::StartCharging()
+{
+	UE_LOG(LogTemp, Warning, TEXT("state is charge"));
+	bIsLockingOn = false;
+	SetBigLadMovementStatus(EBigLadMovementStatus::EMS_ChargeToTarget);
+}
+
 void ABigLad::StartResting()
 {
-	ChargePath->SetHiddenInGame(true);
+	UE_LOG(LogTemp, Warning, TEXT("charge over"));
 	bIsCharging = false;
 	bIsExhausted = true;
-	InterpSpeed = 1.f;
-	SetInterpToMain(true);
+	//InterpSpeed = 1.f;
+	//SetInterpToMain(true);
 	GetWorldTimerManager().SetTimer(ChargeHandle, this, &ABigLad::StopResting, ExhaustedTime);
 }
 
 void ABigLad::StopResting()
 {
+	UE_LOG(LogTemp, Warning, TEXT("ready to go choosing action"));
 	bIsExhausted = false;
 	InterpSpeed = 5.f;
 	if (bOverlappingCombatSphere)
 	{
+		UE_LOG(LogTemp, Warning, TEXT("action slap"));
 		SetInterpToMain(true);
 		SetBigLadMovementStatus(EBigLadMovementStatus::EMS_Attacking);
 	}
 	else if (bOverlappingWalkSphere)
 	{
+		UE_LOG(LogTemp, Warning, TEXT("action move"));
 		SetInterpToMain(false);
 		MoveToTarget(CombatTarget);
 		SetBigLadMovementStatus(EBigLadMovementStatus::EMS_MoveToTarget);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("action repeat"));
+		SetInterpToMain(true);
+		SetBigLadMovementStatus(EBigLadMovementStatus::EMS_LockOnTarget);
 	}
 }
 
@@ -162,7 +190,7 @@ void ABigLad::AggroSphereOnOverlapBegin(UPrimitiveComponent* OverlappedComponent
 			{
 				CombatTarget = Main;
 				SetInterpToMain(true);
-				SetBigLadMovementStatus(EBigLadMovementStatus::EMS_ChargeToTarget);
+				SetBigLadMovementStatus(EBigLadMovementStatus::EMS_LockOnTarget);
 			}
 		}
 	}
@@ -194,7 +222,7 @@ void ABigLad::WalkSphereOnOverlapBegin(UPrimitiveComponent* OverlappedComponent,
 			if (Main)
 			{
 				bOverlappingWalkSphere = true;
-				if ((!bIsCharging) && (!bIsExhausted))
+				if (BigLadMovementStatus != EBigLadMovementStatus::EMS_LockOnTarget && (!bIsCharging) && (!bIsExhausted))
 				{
 					SetInterpToMain(false);
 					MoveToTarget(Main);
@@ -214,11 +242,11 @@ void ABigLad::WalkSphereOnOverlapEnd(UPrimitiveComponent* OverlappedComponent, A
 			if (Main)
 			{
 				bOverlappingWalkSphere = false;
-				if ((!bIsCharging) && (!bIsExhausted))
+				if (BigLadMovementStatus != EBigLadMovementStatus::EMS_LockOnTarget && (!bIsCharging) && (!bIsExhausted))
 				{
 					SetInterpToMain(true);
 					AIController->StopMovement();
-					SetBigLadMovementStatus(EBigLadMovementStatus::EMS_ChargeToTarget);
+					SetBigLadMovementStatus(EBigLadMovementStatus::EMS_LockOnTarget);
 				}
 			}
 		}
@@ -235,7 +263,7 @@ void ABigLad::CombatSphereOnOverlapBegin(UPrimitiveComponent* OverlappedComponen
 			{
 				Main->SetCombatTarget(this);
 				bOverlappingCombatSphere = true;
-				if ((!bIsCharging) && (!bIsExhausted))
+				if ((!bIsLockingOn) && (!bIsCharging) && (!bIsExhausted))
 				{
 					SetInterpToMain(true);
 					SetBigLadMovementStatus(EBigLadMovementStatus::EMS_Attacking);
@@ -255,7 +283,7 @@ void ABigLad::CombatSphereOnOverlapEnd(UPrimitiveComponent* OverlappedComponent,
 			{
 				Main->SetCombatTarget(nullptr);
 				bOverlappingCombatSphere = false;
-				if ((!bIsCharging) && (!bIsExhausted))
+				if ((!bIsLockingOn) && (!bIsCharging) && (!bIsExhausted))
 				{
 					SetInterpToMain(false);
 					if (BigLadMovementStatus != EBigLadMovementStatus::EMS_Attacking)

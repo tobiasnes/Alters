@@ -10,6 +10,7 @@ UENUM(BlueprintType)
 enum class EBigLadMovementStatus :uint8
 {
 	EMS_Idle			UMETA(DisplayName = "Idle"),
+	EMS_LockOnTarget	UMETA(DisplayName = "LockOnTarget"),
 	EMS_ChargeToTarget	UMETA(DisplayName = "ChargetoTarget"),
 	EMS_MoveToTarget	UMETA(DisplayName = "MoveToTarget"),
 	EMS_Attacking		UMETA(DisplayName = "Attacking"),
@@ -66,6 +67,8 @@ public:
 
 	// Values for the move where the AI charges the player
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Charge")
+	float LockOnTime;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Charge")
 	float ChargeSpeed;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Charge")
 	float ChargeTime;
@@ -90,6 +93,10 @@ public:
 	UFUNCTION()
 	virtual void AggroSphereOnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
+	// tells the AI if it is Locking on the enemy
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AI")
+	bool bIsLockingOn;
+
 	// tells the AI if it is charging the enemy
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AI")
 	bool bIsCharging;
@@ -97,6 +104,10 @@ public:
 	// tells the AI if it is exhausetd
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AI")
 	bool bIsExhausted;
+
+	// Before charge
+	UFUNCTION()
+	void StartCharging();
 
 	// After Charge
 	UFUNCTION()
